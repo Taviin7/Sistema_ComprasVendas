@@ -54,10 +54,9 @@ public class CadastroNotas extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btn_Menu = new javax.swing.JButton();
         btn_GrpTipoNota = new javax.swing.ButtonGroup();
         lbl_Titulo = new javax.swing.JLabel();
-        btn_Menu1 = new javax.swing.JButton();
+        btn_Menu = new javax.swing.JButton();
         lbl_Fornecedor = new javax.swing.JLabel();
         lbl_Cliente = new javax.swing.JLabel();
         cmb_Cliente = new javax.swing.JComboBox<>();
@@ -77,6 +76,13 @@ public class CadastroNotas extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txt_Data = new javax.swing.JTextField();
         btn_DataAtual = new javax.swing.JButton();
+        lbl_Estoque = new javax.swing.JLabel();
+        txt_Estoque = new javax.swing.JTextField();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        lbl_Titulo.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        lbl_Titulo.setText("Gerenciar Notas");
 
         btn_Menu.setText("Voltar");
         btn_Menu.addActionListener(new java.awt.event.ActionListener() {
@@ -84,13 +90,6 @@ public class CadastroNotas extends javax.swing.JFrame {
                 btn_MenuActionPerformed(evt);
             }
         });
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        lbl_Titulo.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        lbl_Titulo.setText("Gerenciar Notas");
-
-        btn_Menu1.setText("Voltar");
 
         lbl_Fornecedor.setText("Fornecedor");
 
@@ -122,6 +121,11 @@ public class CadastroNotas extends javax.swing.JFrame {
         lbl_Produto.setText("Produto:");
 
         cmb_Produto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmb_Produto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_ProdutoActionPerformed(evt);
+            }
+        });
 
         lbl_QntdVendida.setText("Quantdade Vendida");
 
@@ -157,6 +161,8 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
         });
 
+        lbl_Estoque.setText("Estoque:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -165,10 +171,7 @@ public class CadastroNotas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(btn_Menu1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(lbl_Titulo))
+                        .addComponent(btn_Menu))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,23 +188,31 @@ public class CadastroNotas extends javax.swing.JFrame {
                                     .addComponent(lbl_Produto))
                                 .addGap(12, 12, 12)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(lbl_Estoque)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txt_Estoque, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(cmb_Fornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(33, 33, 33)
-                                        .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(lbl_QntdComprada)))
-                                .addGap(33, 33, 33)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lbl_QntdVendida)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(lbl_QntdComprada))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(40, 40, 40)
+                                        .addComponent(txt_Entrada)
+                                        .addGap(5, 5, 5)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(18, 18, 18)
-                                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(lbl_QntdVendida))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(11, 11, 11))))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btn_Deletar)
                                 .addGap(18, 18, 18)
@@ -213,15 +224,18 @@ public class CadastroNotas extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btn_DataAtual)))))
-                .addContainerGap(184, Short.MAX_VALUE))
+                                .addComponent(btn_DataAtual))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(104, 104, 104)
+                        .addComponent(lbl_Titulo)))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addGap(20, 20, 20)
                 .addComponent(lbl_Titulo)
-                .addGap(51, 51, 51)
+                .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_Cliente))
@@ -232,7 +246,9 @@ public class CadastroNotas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Produto)
-                    .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_Estoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_Estoque))
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbl_TipoNota)
@@ -240,15 +256,13 @@ public class CadastroNotas extends javax.swing.JFrame {
                         .addComponent(rbn_Entrada)
                         .addComponent(rbn_Saida)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbl_QntdComprada)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbl_QntdVendida)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_QntdComprada)
+                    .addComponent(lbl_QntdVendida))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_DataAtual)
@@ -260,18 +274,12 @@ public class CadastroNotas extends javax.swing.JFrame {
                     .addComponent(btn_Atualizar)
                     .addComponent(btn_Deletar))
                 .addGap(27, 27, 27)
-                .addComponent(btn_Menu1)
+                .addComponent(btn_Menu)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btn_MenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MenuActionPerformed
-        Menu menu = new Menu(); // Cria uma nova instância do formulário
-        menu.setVisible(true); //abri o forms
-        dispose(); //fecha a tela em background
-    }//GEN-LAST:event_btn_MenuActionPerformed
 
     private void btn_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CadastrarActionPerformed
         try {
@@ -292,7 +300,7 @@ public class CadastroNotas extends javax.swing.JFrame {
                         .filter(c -> c.getNome().equals(nomeCliente))
                         .findFirst()
                         .orElse(null);
-                
+
                 if (clienteSelecionado == null) {
                     JOptionPane.showMessageDialog(this, "Selecione um cliente válido!");
                     return;
@@ -305,7 +313,7 @@ public class CadastroNotas extends javax.swing.JFrame {
                         .filter(f -> f.getNome().equals(nomeFornecedor))
                         .findFirst()
                         .orElse(null);
-                
+
                 if (fornecedorSelecionado == null) {
                     JOptionPane.showMessageDialog(this, "Selecione um fornecedor válido!");
                     return;
@@ -339,19 +347,19 @@ public class CadastroNotas extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Por favor, informe uma quantidade válida!");
                 return;
             }
-            
+
             // Verificar estoque disponível para vendas
             if (rbn_Saida.isSelected()) {
                 if (produtoSelecionado.getEstoque() < quantidade) {
                     String msg = String.format(
-                        "⚠️ ESTOQUE INSUFICIENTE!\n\n" +
-                        "Produto: %s\n" +
-                        "Estoque disponível: %d unidades\n" +
-                        "Quantidade solicitada: %d unidades\n\n" +
-                        "Ajuste a quantidade e tente novamente.",
-                        produtoSelecionado.getNome(),
-                        produtoSelecionado.getEstoque(),
-                        quantidade
+                            "⚠️ ESTOQUE INSUFICIENTE!\n\n"
+                            + "Produto: %s\n"
+                            + "Estoque disponível: %d unidades\n"
+                            + "Quantidade solicitada: %d unidades\n\n"
+                            + "Ajuste a quantidade e tente novamente.",
+                            produtoSelecionado.getNome(),
+                            produtoSelecionado.getEstoque(),
+                            quantidade
                     );
                     JOptionPane.showMessageDialog(this, msg, "Estoque Insuficiente", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -363,7 +371,7 @@ public class CadastroNotas extends javax.swing.JFrame {
             nota.setCliente(clienteSelecionado);
             nota.setFornecedor(fornecedorSelecionado);
             nota.setData(java.sql.Date.valueOf(txt_Data.getText().trim()));
-            
+
             // Definir o tipo da nota: E=Entrada (Compra), S=Saída (Venda)
             if (rbn_Entrada.isSelected()) {
                 nota.setTipo("E"); // Entrada (Compra)
@@ -388,7 +396,7 @@ public class CadastroNotas extends javax.swing.JFrame {
 
             // Limpar campos após sucesso
             limparCampos();
-            
+
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao cadastrar nota: " + ex.getMessage());
         } catch (Exception ex) {
@@ -417,60 +425,68 @@ public class CadastroNotas extends javax.swing.JFrame {
         txt_Data.setText(hoje.toString()); // formato padrão: YYYY-MM-DD
     }//GEN-LAST:event_btn_DataAtualActionPerformed
 
+    private void cmb_ProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_ProdutoActionPerformed
+        mostrarEstoqueProdutoSelecionado();
+    }//GEN-LAST:event_cmb_ProdutoActionPerformed
+
+    private void btn_MenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_MenuActionPerformed
+        Menu menu = new Menu(); // Cria uma nova instância do formulário
+        menu.setVisible(true); //abri o forms
+        dispose(); //fecha a tela em background
+    }//GEN-LAST:event_btn_MenuActionPerformed
+
     private void carregarComboCliente() {
-        try {
-            ClienteDAO cDAO = new ClienteDAO();
-            listaClientes = cDAO.listarClientes();
 
-            cmb_Cliente.removeAllItems();
+        ClienteDAO cDAO = new ClienteDAO();
+        listaClientes = cDAO.listarClientes();
 
-            if (listaClientes != null && !listaClientes.isEmpty()) {
-                for (Cliente c : listaClientes) {
-                    cmb_Cliente.addItem(c.getNome());
-                }
-            } else {
-                cmb_Cliente.addItem("Nenhum cliente cadastrado");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar clientes: " + e.getMessage());
+        cmb_Cliente.removeAllItems();
+
+        for (Cliente c : listaClientes) {
+            cmb_Cliente.addItem(c.getNome());
         }
+
     }
 
     private void carregarComboFornecedor() {
-        try {
-            FornecedorDAO fDAO = new FornecedorDAO();
-            listaFornecedores = fDAO.listarFornecedores();
 
-            cmb_Fornecedor.removeAllItems();
+        FornecedorDAO fDAO = new FornecedorDAO();
+        listaFornecedores = fDAO.listarFornecedores();
 
-            if (listaFornecedores != null && !listaFornecedores.isEmpty()) {
-                for (Fornecedor f : listaFornecedores) {
-                    cmb_Fornecedor.addItem(f.getNome());
-                }
-            } else {
-                cmb_Fornecedor.addItem("Nenhum fornecedor cadastrado");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar fornecedores: " + e.getMessage());
+        cmb_Fornecedor.removeAllItems();
+
+        for (Fornecedor f : listaFornecedores) {
+            cmb_Fornecedor.addItem(f.getNome());
         }
     }
 
     private void carregarComboProduto() {
-        try {
-            ProdutoDAO pDAO = new ProdutoDAO();
-            listaProdutos = pDAO.listarProdutos();
 
-            cmb_Produto.removeAllItems();
+        ProdutoDAO pDAO = new ProdutoDAO();
+        listaProdutos = pDAO.listarProdutos();
 
-            if (listaProdutos != null && !listaProdutos.isEmpty()) {
-                for (Produto p : listaProdutos) {
-                    cmb_Produto.addItem(p.getNome());
+        cmb_Produto.removeAllItems();
+
+        for (Produto p : listaProdutos) {
+            cmb_Produto.addItem(p.getNome());
+        }
+
+    }
+
+    private void mostrarEstoqueProdutoSelecionado() {
+        //Pega a String selecionada
+        String nomeSelecionado = (String) cmb_Produto.getSelectedItem();
+
+        if (nomeSelecionado != null) {
+            //Procura o Produto correspondente na lista original
+            for (Produto p : listaProdutos) {
+                if (p.getNome().equals(nomeSelecionado)) {
+                    // Produto encontrado!
+                    int estoque = p.getEstoque();
+                    txt_Estoque.setText(String.valueOf(estoque));
+                    return; // Sai do método após encontrar
                 }
-            } else {
-                cmb_Produto.addItem("Nenhum produto cadastrado");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar produtos: " + e.getMessage());
         }
     }
 
@@ -492,14 +508,20 @@ public class CadastroNotas extends javax.swing.JFrame {
             lbl_QntdVendida.setEnabled(true);
         }
     }
-    
+
     private void limparCampos() {
         txt_Entrada.setText("");
         txt_Saida.setText("");
         txt_Data.setText("");
-        if (cmb_Cliente.getItemCount() > 0) cmb_Cliente.setSelectedIndex(0);
-        if (cmb_Fornecedor.getItemCount() > 0) cmb_Fornecedor.setSelectedIndex(0);
-        if (cmb_Produto.getItemCount() > 0) cmb_Produto.setSelectedIndex(0);
+        if (cmb_Cliente.getItemCount() > 0) {
+            cmb_Cliente.setSelectedIndex(0);
+        }
+        if (cmb_Fornecedor.getItemCount() > 0) {
+            cmb_Fornecedor.setSelectedIndex(0);
+        }
+        if (cmb_Produto.getItemCount() > 0) {
+            cmb_Produto.setSelectedIndex(0);
+        }
     }
 
     /**
@@ -544,12 +566,12 @@ public class CadastroNotas extends javax.swing.JFrame {
     private javax.swing.JButton btn_Deletar;
     private javax.swing.ButtonGroup btn_GrpTipoNota;
     private javax.swing.JButton btn_Menu;
-    private javax.swing.JButton btn_Menu1;
     private javax.swing.JComboBox<String> cmb_Cliente;
     private javax.swing.JComboBox<String> cmb_Fornecedor;
     private javax.swing.JComboBox<String> cmb_Produto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lbl_Cliente;
+    private javax.swing.JLabel lbl_Estoque;
     private javax.swing.JLabel lbl_Fornecedor;
     private javax.swing.JLabel lbl_Produto;
     private javax.swing.JLabel lbl_QntdComprada;
@@ -560,6 +582,7 @@ public class CadastroNotas extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbn_Saida;
     private javax.swing.JTextField txt_Data;
     private javax.swing.JTextField txt_Entrada;
+    private javax.swing.JTextField txt_Estoque;
     private javax.swing.JTextField txt_Saida;
     // End of variables declaration//GEN-END:variables
 }

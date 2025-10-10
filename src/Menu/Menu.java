@@ -4,6 +4,7 @@ package Menu;
 import Cliente.CadastroCliente;
 import Connection.Conexao;
 import Fornecedor.CadastroFornecedor;
+import Notas.Nota.NotaItem.CadastroNotas;
 import Produto.CadastroProduto;
 
 /*
@@ -69,6 +70,11 @@ public class Menu extends javax.swing.JFrame {
         });
 
         btn_lancarNotas.setText("Lançar Notas");
+        btn_lancarNotas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_lancarNotasActionPerformed(evt);
+            }
+        });
 
         btn_TestasConexao.setText("Testar");
         btn_TestasConexao.addActionListener(new java.awt.event.ActionListener() {
@@ -141,7 +147,6 @@ public class Menu extends javax.swing.JFrame {
 
     private void btn_TestasConexaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_TestasConexaoActionPerformed
         Conexao c = new Conexao();
-
         c.getConexao();
     }//GEN-LAST:event_btn_TestasConexaoActionPerformed
 
@@ -150,6 +155,12 @@ public class Menu extends javax.swing.JFrame {
         cadFornecedor.setVisible(true); //abri o forms
         dispose(); //fecha a tela em background
     }//GEN-LAST:event_btn_cadFornecedorActionPerformed
+
+    private void btn_lancarNotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_lancarNotasActionPerformed
+        CadastroNotas cadNotas = new CadastroNotas();
+        cadNotas.setVisible(true);
+        dispose(); //fecha a tela em background
+    }//GEN-LAST:event_btn_lancarNotasActionPerformed
 
     /**
      * @param args the command line arguments
