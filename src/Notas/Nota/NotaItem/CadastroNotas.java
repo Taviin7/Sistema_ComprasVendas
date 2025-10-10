@@ -274,31 +274,126 @@ public class CadastroNotas extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_MenuActionPerformed
 
     private void btn_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CadastrarActionPerformed
-        String nomeCliente = (String) cmb_Cliente.getSelectedItem();
-        String nomeFornecedor = (String) cmb_Fornecedor.getSelectedItem();
-        String nomeProduto = (String) cmb_Produto.getSelectedItem();
+        try {
+            // Validações
+            if (txt_Data.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Por favor, informe a data da nota!");
+                return;
+            }
 
-        Models.Cliente clienteSelecionado = listaClientes.stream()
-                .filter(c -> c.getNome().equals(nomeCliente))
-                .findFirst()
-                .orElse(null);
+            String nomeCliente = (String) cmb_Cliente.getSelectedItem();
+            String nomeFornecedor = (String) cmb_Fornecedor.getSelectedItem();
+            String nomeProduto = (String) cmb_Produto.getSelectedItem();
 
-        Models.Fornecedor fornecedorSelecionado = listaFornecedores.stream()
-                .filter(f -> f.getNome().equals(nomeFornecedor))
-                .findFirst()
-                .orElse(null);
+            // Buscar objetos completos
+            Cliente clienteSelecionado = null;
+            if (rbn_Saida.isSelected()) {
+                clienteSelecionado = listaClientes.stream()
+                        .filter(c -> c.getNome().equals(nomeCliente))
+                        .findFirst()
+                        .orElse(null);
+                
+                if (clienteSelecionado == null) {
+                    JOptionPane.showMessageDialog(this, "Selecione um cliente válido!");
+                    return;
+                }
+            }
 
-        Models.Produto produtoSelecionado = listaProdutos.stream()
-                .filter(p -> p.getNome().equals(nomeProduto))
-                .findFirst()
-                .orElse(null);
+            Fornecedor fornecedorSelecionado = null;
+            if (rbn_Entrada.isSelected()) {
+                fornecedorSelecionado = listaFornecedores.stream()
+                        .filter(f -> f.getNome().equals(nomeFornecedor))
+                        .findFirst()
+                        .orElse(null);
+                
+                if (fornecedorSelecionado == null) {
+                    JOptionPane.showMessageDialog(this, "Selecione um fornecedor válido!");
+                    return;
+                }
+            }
 
-        Nota nota = new Nota();
-        nota.setCliente(clienteSelecionado);
-        nota.setFornecedor(fornecedorSelecionado);
+            Produto produtoSelecionado = listaProdutos.stream()
+                    .filter(p -> p.getNome().equals(nomeProduto))
+                    .findFirst()
+                    .orElse(null);
 
-        nota.setData(java.sql.Date.valueOf(txt_Data.getText()));
-        //git test
+            if (produtoSelecionado == null) {
+                JOptionPane.showMessageDialog(this, "Selecione um produto válido!");
+                return;
+            }
+
+            // Validar quantidade
+            int quantidade = 0;
+            try {
+                if (rbn_Entrada.isSelected()) {
+                    quantidade = Integer.parseInt(txt_Entrada.getText().trim());
+                } else {
+                    quantidade = Integer.parseInt(txt_Saida.getText().trim());
+                }
+
+                if (quantidade <= 0) {
+                    JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero!");
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Por favor, informe uma quantidade válida!");
+                return;
+            }
+            
+            // Verificar estoque disponível para vendas
+            if (rbn_Saida.isSelected()) {
+                if (produtoSelecionado.getEstoque() < quantidade) {
+                    String msg = String.format(
+                        "⚠️ ESTOQUE INSUFICIENTE!\n\n" +
+                        "Produto: %s\n" +
+                        "Estoque disponível: %d unidades\n" +
+                        "Quantidade solicitada: %d unidades\n\n" +
+                        "Ajuste a quantidade e tente novamente.",
+                        produtoSelecionado.getNome(),
+                        produtoSelecionado.getEstoque(),
+                        quantidade
+                    );
+                    JOptionPane.showMessageDialog(this, msg, "Estoque Insuficiente", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            }
+
+            // Criar a nota
+            Nota nota = new Nota();
+            nota.setCliente(clienteSelecionado);
+            nota.setFornecedor(fornecedorSelecionado);
+            nota.setData(java.sql.Date.valueOf(txt_Data.getText().trim()));
+            
+            // Definir o tipo da nota: E=Entrada (Compra), S=Saída (Venda)
+            if (rbn_Entrada.isSelected()) {
+                nota.setTipo("E"); // Entrada (Compra)
+            } else {
+                nota.setTipo("S"); // Saída (Venda)
+            }
+
+            // Criar o item da nota
+            NotaItem item = new NotaItem();
+            item.setProduto(produtoSelecionado);
+            item.setQuantidade(quantidade);
+            item.setPreco(produtoSelecionado.getPrecoUnitario());
+
+            // Adicionar item à lista de itens da nota
+            List<NotaItem> itens = new ArrayList<>();
+            itens.add(item);
+            nota.setItens(itens);
+
+            // Salvar no banco
+            NotaDAO notaDAO = new NotaDAO();
+            notaDAO.inserirNota(nota);
+
+            // Limpar campos após sucesso
+            limparCampos();
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Erro ao cadastrar nota: " + ex.getMessage());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage());
+        }
     }//GEN-LAST:event_btn_CadastrarActionPerformed
 
     private void btn_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AtualizarActionPerformed
@@ -323,39 +418,59 @@ public class CadastroNotas extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_DataAtualActionPerformed
 
     private void carregarComboCliente() {
-        ClienteDAO cDAO = new ClienteDAO();
-        listaClientes = cDAO.listarClientes(); //Armazene a lista completa
+        try {
+            ClienteDAO cDAO = new ClienteDAO();
+            listaClientes = cDAO.listarClientes();
 
-        cmb_Cliente.removeAllItems(); // limpa o combo
-        
-        //populando
-        for (Cliente c : listaClientes) {
-            cmb_Cliente.addItem(c.getNome());
+            cmb_Cliente.removeAllItems();
+
+            if (listaClientes != null && !listaClientes.isEmpty()) {
+                for (Cliente c : listaClientes) {
+                    cmb_Cliente.addItem(c.getNome());
+                }
+            } else {
+                cmb_Cliente.addItem("Nenhum cliente cadastrado");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar clientes: " + e.getMessage());
         }
     }
 
     private void carregarComboFornecedor() {
-        FornecedorDAO fDAO = new FornecedorDAO();
+        try {
+            FornecedorDAO fDAO = new FornecedorDAO();
+            listaFornecedores = fDAO.listarFornecedores();
 
-        listaFornecedores = fDAO.listarFornecedores();
+            cmb_Fornecedor.removeAllItems();
 
-        cmb_Fornecedor.removeAllItems(); 
-
-        for (Fornecedor f : listaFornecedores) {
-            cmb_Fornecedor.addItem(f.getNome());
+            if (listaFornecedores != null && !listaFornecedores.isEmpty()) {
+                for (Fornecedor f : listaFornecedores) {
+                    cmb_Fornecedor.addItem(f.getNome());
+                }
+            } else {
+                cmb_Fornecedor.addItem("Nenhum fornecedor cadastrado");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar fornecedores: " + e.getMessage());
         }
-
     }
 
     private void carregarComboProduto() {
-        ProdutoDAO pDAO = new ProdutoDAO();
+        try {
+            ProdutoDAO pDAO = new ProdutoDAO();
+            listaProdutos = pDAO.listarProdutos();
 
-        listaProdutos = pDAO.listarProdutos();
+            cmb_Produto.removeAllItems();
 
-        cmb_Produto.removeAllItems();
-
-        for (Produto p : listaProdutos) {
-            cmb_Produto.addItem(p.getNome());
+            if (listaProdutos != null && !listaProdutos.isEmpty()) {
+                for (Produto p : listaProdutos) {
+                    cmb_Produto.addItem(p.getNome());
+                }
+            } else {
+                cmb_Produto.addItem("Nenhum produto cadastrado");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar produtos: " + e.getMessage());
         }
     }
 
@@ -364,14 +479,27 @@ public class CadastroNotas extends javax.swing.JFrame {
 
         txt_Entrada.setEnabled(entradaSelecionada);
         txt_Saida.setEnabled(!entradaSelecionada);
-        cmb_Cliente.setEnabled(!entradaSelecionada); //desabilita se for entrada
-        cmb_Fornecedor.setEnabled(entradaSelecionada); //inverso
+        cmb_Cliente.setEnabled(!entradaSelecionada);
+        cmb_Fornecedor.setEnabled(entradaSelecionada);
 
         if (entradaSelecionada) {
             txt_Saida.setText("");
+            lbl_QntdComprada.setEnabled(true);
+            lbl_QntdVendida.setEnabled(false);
         } else {
             txt_Entrada.setText("");
+            lbl_QntdComprada.setEnabled(false);
+            lbl_QntdVendida.setEnabled(true);
         }
+    }
+    
+    private void limparCampos() {
+        txt_Entrada.setText("");
+        txt_Saida.setText("");
+        txt_Data.setText("");
+        if (cmb_Cliente.getItemCount() > 0) cmb_Cliente.setSelectedIndex(0);
+        if (cmb_Fornecedor.getItemCount() > 0) cmb_Fornecedor.setSelectedIndex(0);
+        if (cmb_Produto.getItemCount() > 0) cmb_Produto.setSelectedIndex(0);
     }
 
     /**

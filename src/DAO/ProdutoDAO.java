@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package DAO;
 
 import Connection.Conexao;
@@ -16,7 +11,7 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * ProdutoDAO - ATUALIZADO com métodos de gestão de estoque
  * @author 2830482411045
  */
 public class ProdutoDAO {
@@ -30,15 +25,15 @@ public class ProdutoDAO {
     }
 
     public void inserirProduto(Produto produto) {
-        String query = "INSERT INTO Produto(pro_nome, pro_descricao, pro_precoUnitario, pro_qntdEstoque "
+        String query = "INSERT INTO Produto(pro_nome, pro_descricao, pro_precoUnitario, pro_qntdEstoque) "
                 + " VALUES(?, ?, ?, ?);";
 
         try {
             PreparedStatement stmt = this.conn.prepareStatement(query);
             stmt.setString(1, produto.getNome());
             stmt.setString(2, produto.getDescricao());
-            stmt.setString(3, Float.toString(produto.getPrecoUnitario()));
-            stmt.setString(4, Integer.toString(produto.getEstoque()));
+            stmt.setFloat(3, produto.getPrecoUnitario());
+            stmt.setInt(4, produto.getEstoque());
 
             stmt.execute();
             JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
@@ -46,7 +41,7 @@ public class ProdutoDAO {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao inserir Produto: " + ex.getMessage());
         }
-    }//fim do inserir
+    }
 
     public Produto getproduto(int id) {
         String query = "SELECT * FROM Produto WHERE pro_id = ?;";
@@ -69,10 +64,8 @@ public class ProdutoDAO {
             JOptionPane.showMessageDialog(null, "Erro ao consultar Produto: " + ex.getMessage());
             return null;
         }
+    }
 
-    }//fim do getProduto
-
-    //Lista para a tabela do relatório
     public List<Produto> listarProdutos() {
         String query = "SELECT * FROM Produto;";
 
@@ -80,10 +73,9 @@ public class ProdutoDAO {
             PreparedStatement stmt = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
 
-            ResultSet rs = stmt.executeQuery();//obtenho o retorno da consulta e armazena no resultset
-            List<Produto> listaProdutos = new ArrayList();//preparo uma lista de ojetos que vou armazenar a consulta
+            ResultSet rs = stmt.executeQuery();
+            List<Produto> listaProdutos = new ArrayList();
 
-            //percorre o rs e salva as informações dentro de um objeto Cliente e depois add na lista
             while (rs.next()) {
                 Produto p = new Produto();
                 p.setId(rs.getInt("pro_id"));
@@ -99,8 +91,7 @@ public class ProdutoDAO {
             JOptionPane.showMessageDialog(null, "Erro ao consultar todos os Produto: " + ex.getMessage());
             return null;
         }
-
-    }//fim do listarProduto
+    }
 
     public Produto editarProduto(Produto produto) {
         String query = "UPDATE Produto SET pro_nome = ?, pro_descricao = ?, pro_precoUnitario = ?, pro_qntdEstoque = ?"
@@ -110,9 +101,9 @@ public class ProdutoDAO {
             PreparedStatement stmt = this.conn.prepareStatement(query);
             stmt.setString(1, produto.getNome());
             stmt.setString(2, produto.getDescricao());
-            stmt.setString(3, Float.toString(produto.getPrecoUnitario()));
-            stmt.setString(4, Integer.toString(produto.getEstoque()));
-            stmt.setString(5, Integer.toString(produto.getId()));
+            stmt.setFloat(3, produto.getPrecoUnitario());
+            stmt.setInt(4, produto.getEstoque());
+            stmt.setInt(5, produto.getId());
 
             stmt.execute();
             JOptionPane.showMessageDialog(null, "Dados do produto atualizados com sucesso!");
@@ -121,7 +112,7 @@ public class ProdutoDAO {
             JOptionPane.showMessageDialog(null, "Erro ao atulizar os dados do Produto: " + ex.getMessage());
             return null;
         }
-    }//fim do editarProduto
+    }
 
     public void excluirProduto(int id) {
         try {
@@ -135,5 +126,118 @@ public class ProdutoDAO {
         } catch (SQLException ex) {
             System.out.println("Erro ao excluir Produto: " + ex.getMessage());
         }
-    }//fim do excluirCliente
+    }
+
+    // ========== MÉTODOS NOVOS PARA GESTÃO DE ESTOQUE ==========
+
+    /**
+     * Atualiza o estoque de um produto - ENTRADA (Compra)
+     * Aumenta a quantidade em estoque
+     */
+    public void aumentarEstoque(int produtoId, int quantidade) throws SQLException {
+        String query = "UPDATE Produto SET pro_qntdEstoque = pro_qntdEstoque + ? WHERE pro_id = ?";
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = this.conn.prepareStatement(query);
+            stmt.setInt(1, quantidade);
+            stmt.setInt(2, produtoId);
+            
+            int rowsAffected = stmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                System.out.println("✅ Estoque aumentado: +" + quantidade + " unidades (Produto ID: " + produtoId + ")");
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao aumentar estoque: " + ex.getMessage());
+            throw ex;
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                // NÃO fechar conn aqui, será fechado depois
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Atualiza o estoque de um produto - SAÍDA (Venda)
+     * Diminui a quantidade em estoque
+     */
+    public void diminuirEstoque(int produtoId, int quantidade) throws SQLException {
+        // Primeiro verificar se há estoque suficiente
+        if (!verificarEstoqueDisponivel(produtoId, quantidade)) {
+            throw new SQLException("Estoque insuficiente! Não é possível vender " + quantidade + " unidades.");
+        }
+
+        String query = "UPDATE Produto SET pro_qntdEstoque = pro_qntdEstoque - ? WHERE pro_id = ?";
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = this.conn.prepareStatement(query);
+            stmt.setInt(1, quantidade);
+            stmt.setInt(2, produtoId);
+            
+            int rowsAffected = stmt.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                System.out.println("✅ Estoque diminuído: -" + quantidade + " unidades (Produto ID: " + produtoId + ")");
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao diminuir estoque: " + ex.getMessage());
+            throw ex;
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                // NÃO fechar conn aqui, será fechado depois
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Verifica se há estoque disponível para venda
+     */
+    public boolean verificarEstoqueDisponivel(int produtoId, int quantidadeDesejada) throws SQLException {
+        String query = "SELECT pro_qntdEstoque FROM Produto WHERE pro_id = ?";
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean temEstoque = false;
+
+        try {
+            stmt = this.conn.prepareStatement(query);
+            stmt.setInt(1, produtoId);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int estoqueAtual = rs.getInt("pro_qntdEstoque");
+                temEstoque = estoqueAtual >= quantidadeDesejada;
+                
+                if (!temEstoque) {
+                    JOptionPane.showMessageDialog(null, 
+                        "⚠️ ESTOQUE INSUFICIENTE!\n\n" +
+                        "Estoque atual: " + estoqueAtual + " unidades\n" +
+                        "Quantidade solicitada: " + quantidadeDesejada + " unidades\n" +
+                        "Faltam: " + (quantidadeDesejada - estoqueAtual) + " unidades");
+                }
+            }
+
+        } catch (SQLException ex) {
+            throw ex;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                // NÃO fechar conn aqui
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return temEstoque;
+    }
 }

@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Models;
 
 /**
- *
+ * Classe Produto - ATUALIZADA com métodos de estoque
  * @author 2830482411045
  */
 public class Produto {
@@ -16,6 +11,18 @@ public class Produto {
     private float precoUnitario;
     private int estoque;
 
+    public Produto() {
+    }
+
+    public Produto(int id, String nome, String descricao, float precoUnitario, int estoque) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.precoUnitario = precoUnitario;
+        this.estoque = estoque;
+    }
+
+    // Getters e Setters originais
     public int getId() {
         return id;
     }
@@ -54,5 +61,40 @@ public class Produto {
 
     public void setEstoque(int estoque) {
         this.estoque = estoque;
+    }
+
+    // ========== MÉTODOS ADICIONAIS PARA GESTÃO DE ESTOQUE ==========
+
+    /**
+     * Verifica se há estoque disponível
+     */
+    public boolean temEstoqueDisponivel(int quantidadeDesejada) {
+        return this.estoque >= quantidadeDesejada;
+    }
+
+    /**
+     * Aumenta o estoque (usado em compras)
+     */
+    public void aumentarEstoque(int quantidade) {
+        this.estoque += quantidade;
+    }
+
+    /**
+     * Diminui o estoque (usado em vendas)
+     */
+    public void diminuirEstoque(int quantidade) {
+        if (this.estoque >= quantidade) {
+            this.estoque -= quantidade;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Produto{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", precoUnitario=" + precoUnitario +
+                ", estoque=" + estoque +
+                '}';
     }
 }

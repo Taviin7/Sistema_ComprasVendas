@@ -1,27 +1,38 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Models;
 
-/**
- *
- * @author 2830482411045
- */
 public class NotaItem {
     private int id;
+    private Nota nota;
     private Produto produto;
     private int quantidade;
-    private double precoVenda;
-    private Nota nota;
+    private float preco;
 
+    public NotaItem() {
+    }
+
+    public NotaItem(int id, Nota nota, Produto produto, int quantidade, float preco) {
+        this.id = id;
+        this.nota = nota;
+        this.produto = produto;
+        this.quantidade = quantidade;
+        this.preco = preco;
+    }
+
+    // Getters e Setters
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Nota getNota() {
+        return nota;
+    }
+
+    public void setNota(Nota nota) {
+        this.nota = nota;
     }
 
     public Produto getProduto() {
@@ -40,20 +51,26 @@ public class NotaItem {
         this.quantidade = quantidade;
     }
 
-    public double getPrecoVenda() {
-        return precoVenda;
+    public float getPreco() {
+        return preco;
     }
 
-    public void setPrecoVenda(double precoVenda) {
-        this.precoVenda = precoVenda;
+    public void setPreco(float preco) {
+        this.preco = preco;
     }
 
-    public Nota getNota() {
-        return nota;
+    public float calcularSubtotal() {
+        return quantidade * preco;
     }
 
-    public void setNota(Nota nota) {
-        this.nota = nota;
+    @Override
+    public String toString() {
+        return "NotaItem{" +
+                "id=" + id +
+                ", produto=" + (produto != null ? produto.getNome() : "N/A") +
+                ", quantidade=" + quantidade +
+                ", preco=" + preco +
+                ", subtotal=" + calcularSubtotal() +
+                '}';
     }
-    
 }
