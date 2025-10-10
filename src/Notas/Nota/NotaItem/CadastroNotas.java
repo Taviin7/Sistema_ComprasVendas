@@ -119,7 +119,7 @@ public class CadastroNotas extends javax.swing.JFrame {
 
         lbl_TipoNota.setText("Tipo da nota:");
 
-        lbl_Produto.setText("Produto");
+        lbl_Produto.setText("Produto:");
 
         cmb_Produto.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -167,7 +167,10 @@ public class CadastroNotas extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(btn_Menu1))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(43, 43, 43)
+                        .addComponent(lbl_Titulo))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lbl_TipoNota)
@@ -198,24 +201,19 @@ public class CadastroNotas extends javax.swing.JFrame {
                                     .addComponent(lbl_QntdVendida)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(18, 18, 18)
-                                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
-                        .addComponent(lbl_Titulo))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btn_Deletar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_Atualizar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_Cadastrar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_DataAtual)))
+                                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btn_Deletar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btn_Atualizar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btn_Cadastrar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btn_DataAtual)))))
                 .addContainerGap(184, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -223,7 +221,7 @@ public class CadastroNotas extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(lbl_Titulo)
-                .addGap(50, 50, 50)
+                .addGap(51, 51, 51)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_Cliente))
@@ -261,7 +259,7 @@ public class CadastroNotas extends javax.swing.JFrame {
                     .addComponent(btn_Cadastrar)
                     .addComponent(btn_Atualizar)
                     .addComponent(btn_Deletar))
-                .addGap(28, 28, 28)
+                .addGap(27, 27, 27)
                 .addComponent(btn_Menu1)
                 .addContainerGap())
         );
@@ -300,7 +298,7 @@ public class CadastroNotas extends javax.swing.JFrame {
         nota.setFornecedor(fornecedorSelecionado);
 
         nota.setData(java.sql.Date.valueOf(txt_Data.getText()));
-
+        //git test
     }//GEN-LAST:event_btn_CadastrarActionPerformed
 
     private void btn_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AtualizarActionPerformed
