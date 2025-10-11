@@ -125,7 +125,7 @@ public class FornecedorDAO {
 
     public Fornecedor editarFornecedor(Fornecedor fornecedor) {
         String query = "UPDATE Fornecedor SET for_nome = ?, for_nomeFantasia = ?, for_cnpj = ?, for_rua = ?, for_numero = ?,"
-                + " for_bairro = ?, for_cidade = ?, for_cep = ?, for_uf = ?, for_email = ?, for_telefone = ? "
+                + " for_bairro = ?, for_cidade = ?, for_cep = ?, for_uf = ?, for_email = ?, for_telefone = ? ;"
                 + "WHERE for_id = ?;";
 
         try {

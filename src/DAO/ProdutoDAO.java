@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 
 /**
  * ProdutoDAO - ATUALIZADO com métodos de gestão de estoque
+ *
  * @author 2830482411045
  */
 public class ProdutoDAO {
@@ -128,12 +129,7 @@ public class ProdutoDAO {
         }
     }
 
-    // ========== MÉTODOS NOVOS PARA GESTÃO DE ESTOQUE ==========
-
-    /**
-     * Atualiza o estoque de um produto - ENTRADA (Compra)
-     * Aumenta a quantidade em estoque
-     */
+    // gestão do estoque na notas
     public void aumentarEstoque(int produtoId, int quantidade) throws SQLException {
         String query = "UPDATE Produto SET pro_qntdEstoque = pro_qntdEstoque + ? WHERE pro_id = ?";
         PreparedStatement stmt = null;
@@ -142,9 +138,9 @@ public class ProdutoDAO {
             stmt = this.conn.prepareStatement(query);
             stmt.setInt(1, quantidade);
             stmt.setInt(2, produtoId);
-            
+
             int rowsAffected = stmt.executeUpdate();
-            
+
             if (rowsAffected > 0) {
                 System.out.println("✅ Estoque aumentado: +" + quantidade + " unidades (Produto ID: " + produtoId + ")");
             }
@@ -154,7 +150,9 @@ public class ProdutoDAO {
             throw ex;
         } finally {
             try {
-                if (stmt != null) stmt.close();
+                if (stmt != null) {
+                    stmt.close();
+                }
                 // NÃO fechar conn aqui, será fechado depois
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -162,10 +160,6 @@ public class ProdutoDAO {
         }
     }
 
-    /**
-     * Atualiza o estoque de um produto - SAÍDA (Venda)
-     * Diminui a quantidade em estoque
-     */
     public void diminuirEstoque(int produtoId, int quantidade) throws SQLException {
         // Primeiro verificar se há estoque suficiente
         if (!verificarEstoqueDisponivel(produtoId, quantidade)) {
@@ -179,9 +173,9 @@ public class ProdutoDAO {
             stmt = this.conn.prepareStatement(query);
             stmt.setInt(1, quantidade);
             stmt.setInt(2, produtoId);
-            
+
             int rowsAffected = stmt.executeUpdate();
-            
+
             if (rowsAffected > 0) {
                 System.out.println("✅ Estoque diminuído: -" + quantidade + " unidades (Produto ID: " + produtoId + ")");
             }
@@ -191,7 +185,9 @@ public class ProdutoDAO {
             throw ex;
         } finally {
             try {
-                if (stmt != null) stmt.close();
+                if (stmt != null) {
+                    stmt.close();
+                }
                 // NÃO fechar conn aqui, será fechado depois
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -199,9 +195,7 @@ public class ProdutoDAO {
         }
     }
 
-    /**
-     * Verifica se há estoque disponível para venda
-     */
+    //Verifica se há estoque disponível para venda
     public boolean verificarEstoqueDisponivel(int produtoId, int quantidadeDesejada) throws SQLException {
         String query = "SELECT pro_qntdEstoque FROM Produto WHERE pro_id = ?";
         PreparedStatement stmt = null;
@@ -216,13 +210,13 @@ public class ProdutoDAO {
             if (rs.next()) {
                 int estoqueAtual = rs.getInt("pro_qntdEstoque");
                 temEstoque = estoqueAtual >= quantidadeDesejada;
-                
+
                 if (!temEstoque) {
-                    JOptionPane.showMessageDialog(null, 
-                        "⚠️ ESTOQUE INSUFICIENTE!\n\n" +
-                        "Estoque atual: " + estoqueAtual + " unidades\n" +
-                        "Quantidade solicitada: " + quantidadeDesejada + " unidades\n" +
-                        "Faltam: " + (quantidadeDesejada - estoqueAtual) + " unidades");
+                    JOptionPane.showMessageDialog(null,
+                            "⚠️ ESTOQUE INSUFICIENTE!\n\n"
+                            + "Estoque atual: " + estoqueAtual + " unidades\n"
+                            + "Quantidade solicitada: " + quantidadeDesejada + " unidades\n"
+                            + "Faltam: " + (quantidadeDesejada - estoqueAtual) + " unidades");
                 }
             }
 
@@ -230,8 +224,12 @@ public class ProdutoDAO {
             throw ex;
         } finally {
             try {
-                if (rs != null) rs.close();
-                if (stmt != null) stmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
                 // NÃO fechar conn aqui
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -239,5 +237,45 @@ public class ProdutoDAO {
         }
 
         return temEstoque;
+    }
+
+    //complemento do mostrarEstoqueProdutoSelecionado() na notas
+    public Produto buscarProdutoPorNome(String nome) throws SQLException {
+        String query = "SELECT * FROM Produto WHERE pro_nome = ?";
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Produto produto = null;
+
+        try {
+            stmt = this.conn.prepareStatement(query);
+            stmt.setString(1, nome);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                produto = new Produto();
+                produto.setId(rs.getInt("pro_id"));
+                produto.setNome(rs.getString("pro_nome"));
+                produto.setDescricao(rs.getString("pro_descricao"));
+                produto.setPrecoUnitario(rs.getFloat("pro_precoUnitario"));
+                produto.setEstoque(rs.getInt("pro_qntdEstoque"));
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao buscar produto: " + ex.getMessage());
+            throw ex;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return produto;
     }
 }
