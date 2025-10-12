@@ -86,6 +86,7 @@ public class FornecedorDAO {
 
     }//fim do getfornecedor
 
+
     //Lista para a tabela do relatório
     public List<Fornecedor> listarFornecedores() {
         String query = "SELECT * FROM Fornecedor;";

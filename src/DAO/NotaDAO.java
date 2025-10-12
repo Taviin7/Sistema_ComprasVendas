@@ -105,7 +105,7 @@ public class NotaDAO {
         }
     }
 
-    public Nota buscarNotaPorId(int id) throws SQLException {
+    public Nota buscarNota(int id) throws SQLException {
         String query = "SELECT * FROM Notas WHERE nts_id = ?";
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -162,6 +162,7 @@ public class NotaDAO {
 
         try {
             stmt = this.conn.prepareStatement(query);
+
             rs = stmt.executeQuery();
 
             while (rs.next()) {
@@ -189,16 +190,9 @@ public class NotaDAO {
                 listaNotas.add(nota);
             }
 
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-            if (stmt != null) {
-                stmt.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar todos as Notas: " + ex.getMessage());
+            return null;
         }
 
         return listaNotas;
@@ -207,47 +201,35 @@ public class NotaDAO {
     /**
      * Atualiza uma nota existente (NÃO atualiza os itens)
      */
-    public void atualizarNota(Nota nota) throws SQLException {
-        PreparedStatement stmt = null;
+    public Nota atualizarNota(Nota nota) throws SQLException {
+
+        String query = "UPDATE Notas SET nts_data = ? WHERE nts_id = ?;";
 
         try {
-            // Iniciar transação
-            conn.setAutoCommit(false);
-
-            // 1️⃣ Atualizar a nota
-            String queryNota = "UPDATE Notas SET nts_data = ?, nts_tipo = ?, cli_id = ?, for_id = ? WHERE nts_id = ?";
-            stmt = conn.prepareStatement(queryNota);
+            PreparedStatement stmt = this.conn.prepareStatement(query);
             stmt.setDate(1, nota.getData());
-            stmt.setString(2, nota.getTipo());
 
+            /*
             if (nota.getCliente() != null) {
-                stmt.setInt(3, nota.getCliente().getID());
+                stmt.setInt(2, nota.getCliente().getID());
             } else {
-                stmt.setNull(3, java.sql.Types.INTEGER);
+                stmt.setNull(2, java.sql.Types.INTEGER);
             }
 
             if (nota.getFornecedor() != null) {
-                stmt.setInt(4, nota.getFornecedor().getID());
+                stmt.setInt(3, nota.getFornecedor().getID());
             } else {
-                stmt.setNull(4, java.sql.Types.INTEGER);
+                stmt.setNull(3, java.sql.Types.INTEGER);
             }
+            */
+            stmt.setInt(2, nota.getId());
 
-            stmt.setInt(5, nota.getId());
-            int rowsAffected = stmt.executeUpdate();
-            stmt.close();
-
-            if (rowsAffected == 0) {
-                conn.rollback();
-                JOptionPane.showMessageDialog(null, "Nota não encontrada!");
-                return;
-            }
+            JOptionPane.showMessageDialog(null, "Dados da Nota atualizados com sucesso!");
+            return nota;
 
         } catch (SQLException ex) {
-            conn.rollback(); // desfazer tudo se ocorrer erro
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar nota: " + ex.getMessage());
-            throw ex;
+            return null;
         }
-
     }
 
     /**
@@ -258,14 +240,14 @@ public class NotaDAO {
         PreparedStatement stmt = null;
 
         try {
-            // 1. Primeiro reverter o estoque dos itens
+            //reverter o estoque dos itens
             NotaItemDAO itemDAO = new NotaItemDAO();
             itemDAO.reverterEstoqueAntesDeletar(notaId);
 
-            // 2. Deletar os itens da nota (CASCADE vai fazer automaticamente, mas fazemos manualmente para controle)
-            itemDAO.excluirItensPorNota(notaId);
+            //deletar os itens da nota
+            itemDAO.excluirItens(notaId);
 
-            // 3. Deletar a nota
+            //Deletar a nota
             String query = "DELETE FROM Notas WHERE nts_id = ?";
             stmt = this.conn.prepareStatement(query);
             stmt.setInt(1, notaId);

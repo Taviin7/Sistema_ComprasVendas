@@ -86,6 +86,7 @@ public class CadastroNotas extends javax.swing.JFrame {
         btn_Consultar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         txt_NotaID = new javax.swing.JTextField();
+        btn_Limpar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -192,6 +193,13 @@ public class CadastroNotas extends javax.swing.JFrame {
         txt_NotaID.setEditable(false);
         txt_NotaID.setEnabled(false);
 
+        btn_Limpar.setText("Limpar");
+        btn_Limpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_LimparActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -204,9 +212,11 @@ public class CadastroNotas extends javax.swing.JFrame {
                         .addComponent(lbl_Titulo))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btn_Deletar)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_Atualizar)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btn_Limpar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_Cadastrar))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -214,7 +224,7 @@ public class CadastroNotas extends javax.swing.JFrame {
                         .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btn_DataAtual)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(206, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -326,7 +336,8 @@ public class CadastroNotas extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Cadastrar)
                     .addComponent(btn_Atualizar)
-                    .addComponent(btn_Deletar))
+                    .addComponent(btn_Deletar)
+                    .addComponent(btn_Limpar))
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Menu)
@@ -412,15 +423,86 @@ public class CadastroNotas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao cadastrar nota: " + ex.getMessage());
         }
 
+        limparCampos();
+        desbloquearCampos();
+        verificarTipoNota();
     }//GEN-LAST:event_btn_CadastrarActionPerformed
 
     private void btn_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AtualizarActionPerformed
-        JOptionPane.showMessageDialog(this, "Vai tomar no cu!");
+        try {
+
+            // Obter dados atualizados
+            int notaId = Integer.parseInt(txt_NotaID.getText());
+            java.sql.Date novaData = java.sql.Date.valueOf(txt_Data.getText());
+
+            int novaQuantidade;
+            if (rbn_Entrada.isSelected()) {
+                novaQuantidade = Integer.parseInt(txt_Entrada.getText());
+            } else {
+                novaQuantidade = Integer.parseInt(txt_Saida.getText());
+            }
+
+            //Buscar a nota para ter o tipo (E ou S)
+            NotaDAO notaDAO = new NotaDAO();
+            Nota notaPrincipal = notaDAO.buscarNota(notaId);
+
+            if (notaPrincipal == null) {
+                JOptionPane.showMessageDialog(this, "Nota não encontrada!");
+                return;
+            }
+
+            //atualizando a data da nota
+            notaPrincipal.setData(novaData);
+            notaDAO.atualizarNota(notaPrincipal);
+
+            //atualizando a quantidade do item
+            NotaItemDAO itemDAO = new NotaItemDAO();
+            List<NotaItem> itens = itemDAO.listarItensPorNota(notaId);
+
+            if (itens.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nenhum item encontrado nesta nota!");
+                return;
+            }
+
+            //item da nota
+            NotaItem itemAntigo = itens.get(0);
+
+            //garantindo que o item antigo tenha a referência da nota
+            itemAntigo.setNota(notaPrincipal);
+
+            //cópia do item com nova quantidade
+            NotaItem itemNovo = new NotaItem();
+            itemNovo.setId(itemAntigo.getId());
+            itemNovo.setProduto(itemAntigo.getProduto());
+            itemNovo.setNota(notaPrincipal); // IMPORTANTE: usar a nota principal
+            itemNovo.setQuantidade(novaQuantidade);
+            itemNovo.setPreco(itemAntigo.getPreco());
+
+            // att o item (reverte estoque antigo e aplica novo)
+            itemDAO.atualizarItem(itemNovo, itemAntigo);
+
+            JOptionPane.showMessageDialog(this,
+                    "Nota atualizada com sucesso!\n\n"
+                    + "Data: " + novaData + "\n"
+                    + "Quantidade: " + novaQuantidade + "\n"
+                    + "Estoque ajustado automaticamente!");
+
+            limparCampos();
+            desbloquearCampos();
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        limparCampos();
+        desbloquearCampos();
+        verificarTipoNota();
     }//GEN-LAST:event_btn_AtualizarActionPerformed
 
     private void btn_DeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_DeletarActionPerformed
         try {
-            int notaId = Integer.parseInt(txt_ID.getText().trim());
+            int notaId = Integer.parseInt(txt_NotaID.getText().trim());
 
             int confirma = JOptionPane.showConfirmDialog(this,
                     "Deseja excluir a nota #" + notaId + "?\n\n"
@@ -436,8 +518,6 @@ public class CadastroNotas extends javax.swing.JFrame {
                 limparCampos();
             }
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "ID da nota inválido!");
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao excluir: " + ex.getMessage());
         }
@@ -474,9 +554,17 @@ public class CadastroNotas extends javax.swing.JFrame {
 
     private void btn_ConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ConsultarActionPerformed
         preencherCamposComNota();
+        rbn_Entrada.setEnabled(false);
+        rbn_Saida.setEnabled(false);
+        cmb_Produto.setEnabled(false);
     }//GEN-LAST:event_btn_ConsultarActionPerformed
 
-    // ----------------------- MÉTODOS AUXILIARES -----------------------
+    private void btn_LimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_LimparActionPerformed
+        limparCampos();
+        desbloquearCampos();
+        verificarTipoNota();
+    }//GEN-LAST:event_btn_LimparActionPerformed
+
     private void carregarComboCliente() {
         ClienteDAO cDAO = new ClienteDAO();
         listaClientes = cDAO.listarClientes();
@@ -558,6 +646,8 @@ public class CadastroNotas extends javax.swing.JFrame {
         txt_Entrada.setText("");
         txt_Saida.setText("");
         txt_Data.setText("");
+        txt_ID.setText("");
+        txt_NotaID.setText("");
         if (cmb_Cliente.getItemCount() > 0) {
             cmb_Cliente.setSelectedIndex(0);
         }
@@ -567,6 +657,14 @@ public class CadastroNotas extends javax.swing.JFrame {
         if (cmb_Produto.getItemCount() > 0) {
             cmb_Produto.setSelectedIndex(0);
         }
+    }
+
+    private void desbloquearCampos() {
+        rbn_Entrada.setEnabled(true);
+        rbn_Saida.setEnabled(true);
+        cmb_Cliente.setEnabled(true);
+        cmb_Fornecedor.setEnabled(true);
+        cmb_Produto.setEnabled(true);
     }
 
     //pega os dados digitados na tela e monta um objeto Nota para enviar ao banco
@@ -627,6 +725,7 @@ public class CadastroNotas extends javax.swing.JFrame {
     public void preencherCamposComNota(Nota nota) {
         try {
             txt_Data.setText(nota.getData().toString());
+            txt_NotaID.setText(Integer.toString(nota.getId()));
             if ("E".equals(nota.getTipo())) {
                 rbn_Entrada.setSelected(true);
             } else {
@@ -639,6 +738,7 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
             if (nota.getFornecedor() != null) {
                 cmb_Fornecedor.setSelectedItem(nota.getFornecedor().getNome());
+
             }
 
             List<NotaItem> itens = carregarItensComNota(nota);
@@ -654,7 +754,7 @@ public class CadastroNotas extends javax.swing.JFrame {
                 }
             }
 
-            JOptionPane.showMessageDialog(this, "✅ Nota #" + nota.getId() + " carregada!");
+            JOptionPane.showMessageDialog(this, "Nota #" + nota.getId() + " carregada!");
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar nota: " + ex.getMessage());
         }
@@ -664,7 +764,7 @@ public class CadastroNotas extends javax.swing.JFrame {
     //e depois chama o outro método para preencher, o de cima.
     private void preencherCamposComNota() {
         try {
-            String idTexto = txt_ID.getText().trim();
+            String idTexto = txt_ID.getText();
             if (idTexto.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, informe o código da nota para consultar!");
                 return;
@@ -674,19 +774,18 @@ public class CadastroNotas extends javax.swing.JFrame {
             try {
                 idNota = Integer.parseInt(idTexto);
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Código inválido! Digite apenas números.");
+                JOptionPane.showMessageDialog(this, "Código inválido!");
                 return;
             }
 
             NotaDAO notaDAO = new NotaDAO();
-            Nota nota = notaDAO.buscarNotaPorId(idNota);
+            Nota nota = notaDAO.buscarNota(idNota);
 
             if (nota == null) {
                 JOptionPane.showMessageDialog(this, "Nenhuma nota encontrada com o código informado!");
                 return;
             }
 
-            // Usa o método que você já tem:
             preencherCamposComNota(nota);
 
         } catch (SQLException ex) {
@@ -694,12 +793,61 @@ public class CadastroNotas extends javax.swing.JFrame {
         }
     }
 
-    // ----------------------- CARREGAR NOTA -----------------------
+    private Nota montarNotaParaAtualizacao() throws SQLException {
+        //campo de consulta/ID
+        int notaId = Integer.parseInt(txt_ID.getText().trim());
+
+        NotaDAO notaDAO = new NotaDAO();
+
+        //busca a nota original (para manter Tipo, Cliente, Fornecedor, etc.)
+        Nota notaOriginal = notaDAO.buscarNota(notaId);
+
+        if (notaOriginal == null) {
+            throw new SQLException("Nota com ID " + notaId + " não encontrada no banco de dados.");
+        }
+
+        //item associado
+        NotaItemDAO itemDAO = new NotaItemDAO();
+        List<NotaItem> itens = itemDAO.listarItensPorNota(notaId);
+
+        if (itens == null || itens.isEmpty()) {
+            throw new SQLException("A nota consultada não possui itens para serem atualizados.");
+        }
+
+        //aplica as Alterações
+        //nova Data
+        java.sql.Date novaData = java.sql.Date.valueOf(txt_Data.getText().trim());
+        notaOriginal.setData(novaData);
+
+        //nova qntd no item
+        NotaItem unicoItem = itens.get(0);
+
+        String qntdTexto = notaOriginal.getTipo().equals("E")
+                ? txt_Entrada.getText().trim()
+                : txt_Saida.getText().trim();
+
+        if (qntdTexto.isEmpty()) {
+            throw new NumberFormatException("A quantidade não pode ser vazia.");
+        }
+
+        int novaQuantidade = Integer.parseInt(qntdTexto);
+
+        if (novaQuantidade <= 0) {
+            throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
+        }
+
+        unicoItem.setQuantidade(novaQuantidade);
+
+        notaOriginal.setItens(itens);
+
+        return notaOriginal;
+    }
+
     private List<NotaItem> carregarItensComNota(Nota nota) throws SQLException {
         NotaItemDAO itemDAO = new NotaItemDAO();
         List<NotaItem> itens = itemDAO.listarItensPorNota(nota.getId());
         for (NotaItem item : itens) {
-            item.setNota(nota); // 🔹 associa cada item
+            item.setNota(nota); // associa cada item
         }
         return itens;
     }
@@ -746,6 +894,7 @@ public class CadastroNotas extends javax.swing.JFrame {
     private javax.swing.JButton btn_DataAtual;
     private javax.swing.JButton btn_Deletar;
     private javax.swing.ButtonGroup btn_GrpTipoNota;
+    private javax.swing.JButton btn_Limpar;
     private javax.swing.JButton btn_ListarNotas;
     private javax.swing.JButton btn_Menu;
     private javax.swing.JComboBox<String> cmb_Cliente;

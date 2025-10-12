@@ -22,7 +22,6 @@ public class NotaItemDAO {
     private Conexao conexao;
     private Connection conn;
 
-
     public NotaItemDAO() {
         this.conexao = new Conexao();
         this.conn = this.conexao.getConexao();
@@ -33,7 +32,7 @@ public class NotaItemDAO {
         PreparedStatement stmt = null;
 
         try {
-            // 1. Inserir o item na nota
+            //insert do item na nota
             stmt = this.conn.prepareStatement(query);
             stmt.setInt(1, item.getProduto().getId());
             stmt.setInt(2, item.getNota().getId());
@@ -43,7 +42,7 @@ public class NotaItemDAO {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                // 2. Atualizar o estoque do produto
+                //att estoque do produto
                 atualizarEstoqueProduto(item);
 
                 System.out.println("✅ Item cadastrado na nota com sucesso!");
@@ -73,16 +72,16 @@ public class NotaItemDAO {
                 item.setQuantidade(rs.getInt("nti_qntd"));
                 item.setPreco(rs.getFloat("nti_preco"));
 
-                // Carregar produto
+                //carrega o produto
                 int proId = rs.getInt("pro_id");
                 ProdutoDAO pDAO = new ProdutoDAO();
                 Produto produto = pDAO.getproduto(proId);
                 item.setProduto(produto);
 
-                // Carregar nota (sem itens para evitar recursão)
+                //carregar a nota (sem itens para evitar recursão)
                 int ntsId = rs.getInt("nts_id");
                 NotaDAO nDAO = new NotaDAO();
-                Nota nota = nDAO.buscarNotaPorId(ntsId);
+                Nota nota = nDAO.buscarNota(ntsId);
                 item.setNota(nota);
             }
 
@@ -112,7 +111,7 @@ public class NotaItemDAO {
                 item.setQuantidade(rs.getInt("nti_qntd"));
                 item.setPreco(rs.getFloat("nti_preco"));
 
-                // Carregar produto
+                //carrega o produto
                 int proId = rs.getInt("pro_id");
                 ProdutoDAO pDAO = new ProdutoDAO();
                 Produto produto = pDAO.getproduto(proId);
@@ -155,7 +154,7 @@ public class NotaItemDAO {
 
                 int ntsId = rs.getInt("nts_id");
                 NotaDAO nDAO = new NotaDAO();
-                item.setNota(nDAO.buscarNotaPorId(ntsId));
+                item.setNota(nDAO.buscarNota(ntsId));
 
                 listaItens.add(item);
             }
@@ -174,13 +173,12 @@ public class NotaItemDAO {
 
     public void atualizarItem(NotaItem itemNovo, NotaItem itemAntigo) throws SQLException {
         String query = "UPDATE Notas_Item SET pro_id = ?, nti_qntd = ?, nti_preco = ? WHERE nti_id = ?";
-        PreparedStatement stmt = null;
 
         try {
-            // 1. Reverter o estoque do item antigo
+            //reverter o estoque do item antigo
             reverterEstoqueItem(itemAntigo);
-
-            // 2. Atualizar o item no banco
+            PreparedStatement stmt = this.conn.prepareStatement(query);
+            //atualizar o item no banco
             stmt = this.conn.prepareStatement(query);
             stmt.setInt(1, itemNovo.getProduto().getId());
             stmt.setInt(2, itemNovo.getQuantidade());
@@ -201,18 +199,11 @@ public class NotaItemDAO {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Erro ao atualizar item: " + ex.getMessage());
             throw ex;
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-            if (conn != null) {
-                conn.close();
-            }
         }
+
     }
 
-
-    public void excluirItensPorNota(int notaId) throws SQLException {
+    public void excluirItens(int notaId) throws SQLException {
         String query = "DELETE FROM Notas_Item WHERE nts_id = ?";
         PreparedStatement stmt = null;
 
@@ -239,14 +230,14 @@ public class NotaItemDAO {
         int quantidade = item.getQuantidade();
 
         if ("E".equalsIgnoreCase(tipoNota)) {
-            // ENTRADA (Compra): AUMENTA o estoque
+            // ENTRADA = + estoque
             produtoDAO.aumentarEstoque(produtoId, quantidade);
-            System.out.println("📥 ENTRADA: +" + quantidade + " unidades adicionadas ao estoque");
+            System.out.println("ENTRADA: +" + quantidade + " unidades adicionadas ao estoque");
 
         } else if ("S".equalsIgnoreCase(tipoNota)) {
-            // SAÍDA (Venda): DIMINUI o estoque
+            // SAÍDA = - estoque
             produtoDAO.diminuirEstoque(produtoId, quantidade);
-            System.out.println("📤 SAÍDA: -" + quantidade + " unidades removidas do estoque");
+            System.out.println("SAÍDA: -" + quantidade + " unidades removidas do estoque");
         }
     }
 
@@ -259,37 +250,29 @@ public class NotaItemDAO {
         int quantidade = item.getQuantidade();
 
         if ("E".equalsIgnoreCase(tipoNota)) {
-            // Era ENTRADA: DIMINUI o estoque (reverte)
             produtoDAO.diminuirEstoque(produtoId, quantidade);
-            System.out.println("🔄 Revertendo ENTRADA: -" + quantidade + " unidades");
+            System.out.println("Revertendo ENTRADA: -" + quantidade + " unidades");
 
         } else if ("S".equalsIgnoreCase(tipoNota)) {
-            // Era SAÍDA: AUMENTA o estoque (reverte)
             produtoDAO.aumentarEstoque(produtoId, quantidade);
-            System.out.println("🔄 Revertendo SAÍDA: +" + quantidade + " unidades");
+            System.out.println("Revertendo SAÍDA: +" + quantidade + " unidades");
         }
     }
 
     // Reverte o estoque de todos os itens de uma nota (antes de deletar)
     public void reverterEstoqueAntesDeletar(int notaId) throws SQLException {
-        // 1. **MUDANÇA CRUCIAL:** Carregar o objeto Nota principal.
-        // Usamos o construtor padrão do NotaDAO para fechar a conexão automaticamente.
         NotaDAO notaDAO = new NotaDAO();
-        Nota notaPrincipal = notaDAO.buscarNotaPorId(notaId);
+        Nota notaPrincipal = notaDAO.buscarNota(notaId);
 
         if (notaPrincipal == null) {
-            System.out.println("⚠️ ALERTA: Nota não encontrada para o ID " + notaId + ". Reversão de estoque ignorada.");
+            System.out.println("Nota não encontrada para o ID " + notaId + ". Reversão de estoque ignorada.");
             return;
         }
 
-        // 2. Carregar os itens (eles virão com item.getNota() = null)
         List<NotaItem> itens = listarItensPorNota(notaId);
 
-        // 3. Iterar e anexar a Nota principal antes de reverter
         for (NotaItem item : itens) {
-            // Anexa o objeto Nota, que tem o getTipo() preenchido
-            item.setNota(notaPrincipal); // <--- CORREÇÃO AQUI
-
+            item.setNota(notaPrincipal);
             reverterEstoqueItem(item);
         }
     }

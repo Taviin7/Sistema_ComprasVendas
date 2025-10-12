@@ -45,14 +45,7 @@
                           </Group>
                           <Component id="lbl_Email" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_CNPJ" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="btn_Deletar" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btn_Atualizar" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="btn_Cadastrar" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Group type="103" alignment="1" groupAlignment="1" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="lbl_Telefone" min="-2" max="-2" attributes="0"/>
@@ -100,6 +93,17 @@
                                           <Component id="txt_CNPJ" alignment="1" min="-2" pref="309" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
+                                  <Component id="txt_NomeFantasia" alignment="1" min="-2" pref="309" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                                  <Component id="btn_Deletar" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btn_Atualizar" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="btn_Limpar" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btn_Cadastrar" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -110,10 +114,7 @@
                                           <Component id="lbl_Nome" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="58" pref="58" max="-2" attributes="0"/>
-                                              <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="txt_Nome" alignment="0" min="-2" pref="309" max="-2" attributes="0"/>
-                                                  <Component id="txt_NomeFantasia" alignment="0" min="-2" pref="309" max="-2" attributes="0"/>
-                                              </Group>
+                                              <Component id="txt_Nome" min="-2" pref="309" max="-2" attributes="0"/>
                                           </Group>
                                       </Group>
                                       <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
@@ -201,6 +202,7 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btn_Cadastrar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btn_Limpar" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btn_Atualizar" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btn_Deletar" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -364,6 +366,14 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txt_CNPJ">
+    </Component>
+    <Component class="javax.swing.JButton" name="btn_Limpar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Limpar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_LimparActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

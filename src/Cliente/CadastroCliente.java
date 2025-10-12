@@ -4,13 +4,6 @@ import DAO.ClienteDAO;
 import Menu.Menu;
 import Models.Cliente;
 import javax.swing.JOptionPane;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author 2830482411045
@@ -62,6 +55,7 @@ public class CadastroCliente extends javax.swing.JFrame {
         txt_Numero = new javax.swing.JTextField();
         lbl_Numero = new javax.swing.JLabel();
         btn_ListaCliente = new javax.swing.JButton();
+        btn_Limpar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -134,6 +128,13 @@ public class CadastroCliente extends javax.swing.JFrame {
             }
         });
 
+        btn_Limpar.setText("Limpar");
+        btn_Limpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_LimparActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -153,6 +154,8 @@ public class CadastroCliente extends javax.swing.JFrame {
                                     .addComponent(btn_Deletar)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(btn_Atualizar)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btn_Limpar)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(btn_Cadastrar))
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -259,7 +262,8 @@ public class CadastroCliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Cadastrar)
                     .addComponent(btn_Atualizar)
-                    .addComponent(btn_Deletar))
+                    .addComponent(btn_Deletar)
+                    .addComponent(btn_Limpar))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(17, 17, 17)
@@ -357,8 +361,13 @@ public class CadastroCliente extends javax.swing.JFrame {
         dispose(); //fecha a tela em background
     }//GEN-LAST:event_btn_ListaClienteActionPerformed
 
+    private void btn_LimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_LimparActionPerformed
+        limparFormulario();
+    }//GEN-LAST:event_btn_LimparActionPerformed
+
      private void limparFormulario(){
         txt_Nome.setText("");
+        txt_ClienteID.setText("");
         txt_Rua.setText("");
         txt_Bairro.setText("");
         txt_Numero.setText("");
@@ -410,6 +419,8 @@ public class CadastroCliente extends javax.swing.JFrame {
     private javax.swing.JButton btn_Cadastrar;
     private javax.swing.JButton btn_Consultar;
     private javax.swing.JButton btn_Deletar;
+    private javax.swing.JButton btn_Limpar;
+    private javax.swing.JButton btn_Limpe;
     private javax.swing.JButton btn_ListaCliente;
     private javax.swing.JButton btn_Menu;
     private javax.swing.JLabel jLabel1;

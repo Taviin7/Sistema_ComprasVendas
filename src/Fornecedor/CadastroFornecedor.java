@@ -7,11 +7,6 @@ import Models.Fornecedor;
 import Models.Fornecedor;
 import javax.swing.JOptionPane;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * @author 2830482411045
@@ -67,6 +62,7 @@ public class CadastroFornecedor extends javax.swing.JFrame {
         lbl_NomeFantasia = new javax.swing.JLabel();
         lbl_CNPJ = new javax.swing.JLabel();
         txt_CNPJ = new javax.swing.JTextField();
+        btn_Limpar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -143,6 +139,13 @@ public class CadastroFornecedor extends javax.swing.JFrame {
 
         lbl_CNPJ.setText("CNPJ");
 
+        btn_Limpar.setText("Limpar");
+        btn_Limpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_LimparActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,13 +169,7 @@ public class CadastroFornecedor extends javax.swing.JFrame {
                                 .addComponent(txt_FornecedorID, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lbl_Email)
                             .addComponent(lbl_CNPJ)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(btn_Deletar)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btn_Atualizar)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btn_Cadastrar))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                         .addComponent(lbl_Telefone)
@@ -208,7 +205,17 @@ public class CadastroFornecedor extends javax.swing.JFrame {
                                                 .addComponent(lbl_Numero)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                                 .addComponent(txt_Numero, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addComponent(txt_CNPJ, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                            .addComponent(txt_CNPJ, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txt_NomeFantasia, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(34, 34, 34)
+                                    .addComponent(btn_Deletar)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btn_Atualizar)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btn_Limpar)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btn_Cadastrar)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lbl_Titulo)
@@ -217,9 +224,7 @@ public class CadastroFornecedor extends javax.swing.JFrame {
                                             .addComponent(lbl_Nome)
                                             .addGroup(layout.createSequentialGroup()
                                                 .addGap(58, 58, 58)
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                    .addComponent(txt_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(txt_NomeFantasia, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                                .addComponent(txt_Nome, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGap(40, 40, 40)
                                         .addComponent(lbl_ConsultaID)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -284,6 +289,7 @@ public class CadastroFornecedor extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Cadastrar)
+                    .addComponent(btn_Limpar)
                     .addComponent(btn_Atualizar)
                     .addComponent(btn_Deletar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -384,6 +390,10 @@ public class CadastroFornecedor extends javax.swing.JFrame {
         dispose(); //fecha a tela em background
     }//GEN-LAST:event_btn_ListaFornecedorActionPerformed
 
+    private void btn_LimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_LimparActionPerformed
+        limparFormulario();
+    }//GEN-LAST:event_btn_LimparActionPerformed
+
     private void limparFormulario() {
         txt_Nome.setText("");
         txt_NomeFantasia.setText("");
@@ -443,6 +453,7 @@ public class CadastroFornecedor extends javax.swing.JFrame {
     private javax.swing.JButton btn_Cadastrar;
     private javax.swing.JButton btn_Consultar;
     private javax.swing.JButton btn_Deletar;
+    private javax.swing.JButton btn_Limpar;
     private javax.swing.JButton btn_ListaFornecedor;
     private javax.swing.JButton btn_Menu;
     private javax.swing.JLabel lbl_Bairro;
