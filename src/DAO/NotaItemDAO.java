@@ -120,7 +120,8 @@ public class NotaItemDAO {
                 listaItens.add(item);
             }
 
-        } finally {
+        } //finally executa um código final sempre, independentemente de haver ou não um erro
+        finally {
             if (rs != null) {
                 rs.close();
             }
@@ -159,7 +160,8 @@ public class NotaItemDAO {
                 listaItens.add(item);
             }
 
-        } finally {
+        } //finally executa um código final sempre, independentemente de haver ou não um erro
+        finally {
             if (rs != null) {
                 rs.close();
             }
@@ -171,38 +173,6 @@ public class NotaItemDAO {
         return listaItens;
     }
 
-    public void atualizarItem(NotaItem itemNovo, NotaItem itemAntigo) throws SQLException {
-        String query = "UPDATE Notas_Item SET pro_id = ?, nti_qntd = ?, nti_preco = ? WHERE nti_id = ?";
-
-        try {
-            //reverter o estoque do item antigo
-            reverterEstoqueItem(itemAntigo);
-            PreparedStatement stmt = this.conn.prepareStatement(query);
-            //atualizar o item no banco
-            stmt = this.conn.prepareStatement(query);
-            stmt.setInt(1, itemNovo.getProduto().getId());
-            stmt.setInt(2, itemNovo.getQuantidade());
-            stmt.setFloat(3, itemNovo.getPreco());
-            stmt.setInt(4, itemNovo.getId());
-
-            int rowsAffected = stmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                // 3. Aplicar o novo estoque
-                atualizarEstoqueProduto(itemNovo);
-
-                JOptionPane.showMessageDialog(null, "Item atualizado com sucesso!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Item não encontrado!");
-            }
-
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar item: " + ex.getMessage());
-            throw ex;
-        }
-
-    }
-
     public void excluirItens(int notaId) throws SQLException {
         String query = "DELETE FROM Notas_Item WHERE nts_id = ?";
         PreparedStatement stmt = null;
@@ -212,7 +182,8 @@ public class NotaItemDAO {
             stmt.setInt(1, notaId);
             stmt.executeUpdate();
 
-        } finally {
+        } //finally executa um código final sempre, independentemente de haver ou não um erro
+        finally {
             if (stmt != null) {
                 stmt.close();
             }

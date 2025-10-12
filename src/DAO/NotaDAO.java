@@ -40,14 +40,14 @@ public class NotaDAO {
             stmt.setDate(1, nota.getData());
             stmt.setString(2, nota.getTipo());
 
-            // Cliente pode ser null em nota de entrada
+            //cliente pode ser null em nota de entrada
             if (nota.getCliente() != null) {
                 stmt.setInt(3, nota.getCliente().getID());
             } else {
                 stmt.setNull(3, java.sql.Types.INTEGER);
             }
 
-            // Fornecedor pode ser null em nota de saída
+            //fornecedor pode ser null em nota de saída
             if (nota.getFornecedor() != null) {
                 stmt.setInt(4, nota.getFornecedor().getID());
             } else {
@@ -56,13 +56,13 @@ public class NotaDAO {
 
             stmt.executeUpdate();
 
-            // Recuperar o ID gerado
+            //recuperar o ID gerado
             rs = stmt.getGeneratedKeys();
             if (rs.next()) {
                 int notaId = rs.getInt(1);
                 nota.setId(notaId);
 
-                // Salvar os itens usando o NotaItemDAO
+                //salvar os itens usando o NotaItemDAO
                 if (nota.getItens() != null && !nota.getItens().isEmpty()) {
                     NotaItemDAO itemDAO = new NotaItemDAO();
                     for (NotaItem item : nota.getItens()) {
@@ -88,7 +88,8 @@ public class NotaDAO {
             String errorMsg = "Erro ao inserir Nota: " + ex.getMessage();
             JOptionPane.showMessageDialog(null, errorMsg);
             throw ex;
-        } finally {
+        } //finally executa um código final sempre, independentemente de haver ou não um erro
+        finally {
             try {
                 if (rs != null) {
                     rs.close();
@@ -122,7 +123,7 @@ public class NotaDAO {
                 nota.setData(rs.getDate("nts_data"));
                 nota.setTipo(rs.getString("nts_tipo"));
 
-                // Carregar cliente se existir
+                //carregar cliente se existir
                 int cliId = rs.getInt("cli_id");
                 if (!rs.wasNull()) {
                     ClienteDAO cDAO = new ClienteDAO();
@@ -130,7 +131,7 @@ public class NotaDAO {
                     nota.setCliente(cliente);
                 }
 
-                // Carregar fornecedor se existir
+                //carregar fornecedor se existir
                 int forId = rs.getInt("for_id");
                 if (!rs.wasNull()) {
                     FornecedorDAO fDAO = new FornecedorDAO();
@@ -139,7 +140,8 @@ public class NotaDAO {
                 }
             }
 
-        } finally {
+        } //finally executa um código final sempre, independentemente de haver ou não um erro
+        finally {
             if (rs != null) {
                 rs.close();
             }
@@ -171,7 +173,7 @@ public class NotaDAO {
                 nota.setData(rs.getDate("nts_data"));
                 nota.setTipo(rs.getString("nts_tipo"));
 
-                // Carregar cliente se existir
+                //carregar cliente se existir
                 int cliId = rs.getInt("cli_id");
                 if (!rs.wasNull()) {
                     ClienteDAO cDAO = new ClienteDAO();
@@ -179,7 +181,7 @@ public class NotaDAO {
                     nota.setCliente(cliente);
                 }
 
-                // Carregar fornecedor se existir
+                //carregar fornecedor se existir
                 int forId = rs.getInt("for_id");
                 if (!rs.wasNull()) {
                     FornecedorDAO fDAO = new FornecedorDAO();
@@ -199,42 +201,9 @@ public class NotaDAO {
     }
 
     /**
-     * Atualiza uma nota existente (NÃO atualiza os itens)
-     */
-    public Nota atualizarNota(Nota nota) throws SQLException {
-
-        String query = "UPDATE Notas SET nts_data = ? WHERE nts_id = ?;";
-
-        try {
-            PreparedStatement stmt = this.conn.prepareStatement(query);
-            stmt.setDate(1, nota.getData());
-
-            /*
-            if (nota.getCliente() != null) {
-                stmt.setInt(2, nota.getCliente().getID());
-            } else {
-                stmt.setNull(2, java.sql.Types.INTEGER);
-            }
-
-            if (nota.getFornecedor() != null) {
-                stmt.setInt(3, nota.getFornecedor().getID());
-            } else {
-                stmt.setNull(3, java.sql.Types.INTEGER);
-            }
-            */
-            stmt.setInt(2, nota.getId());
-
-            JOptionPane.showMessageDialog(null, "Dados da Nota atualizados com sucesso!");
-            return nota;
-
-        } catch (SQLException ex) {
-            return null;
-        }
-    }
-
-    /**
      * Exclui uma nota e todos os seus itens IMPORTANTE: Reverte o estoque dos
      * produtos antes de excluir
+     * verificar se usaremos a função deletar
      */
     public void excluirNota(int notaId) throws SQLException {
         PreparedStatement stmt = null;
@@ -247,7 +216,7 @@ public class NotaDAO {
             //deletar os itens da nota
             itemDAO.excluirItens(notaId);
 
-            //Deletar a nota
+            //deletar a nota
             String query = "DELETE FROM Notas WHERE nts_id = ?";
             stmt = this.conn.prepareStatement(query);
             stmt.setInt(1, notaId);

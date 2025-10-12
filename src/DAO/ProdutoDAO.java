@@ -142,7 +142,7 @@ public class ProdutoDAO {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("✅ Estoque aumentado: +" + quantidade + " unidades (Produto ID: " + produtoId + ")");
+                System.out.println("Estoque aumentado: +" + quantidade + " unidades (Produto ID: " + produtoId + ")");
             }
 
         } catch (SQLException ex) {
@@ -177,7 +177,7 @@ public class ProdutoDAO {
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                System.out.println("✅ Estoque diminuído: -" + quantidade + " unidades (Produto ID: " + produtoId + ")");
+                System.out.println("Estoque diminuído: -" + quantidade + " unidades (Produto ID: " + produtoId + ")");
             }
 
         } catch (SQLException ex) {

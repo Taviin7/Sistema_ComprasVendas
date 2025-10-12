@@ -16,6 +16,7 @@ import Models.Fornecedor;
 import Models.Nota;
 import Models.NotaItem;
 import Models.Produto;
+import com.itextpdf.text.PageSize;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -24,6 +25,19 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPCell;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -41,9 +55,17 @@ public class CadastroNotas extends javax.swing.JFrame {
      */
     public CadastroNotas() {
         initComponents();
-        carregarComboCliente();
-        carregarComboFornecedor();
-        carregarComboProduto();
+        ClienteDAO cDAO = new ClienteDAO();
+        FornecedorDAO fDAO = new FornecedorDAO();
+        ProdutoDAO pDAO = new ProdutoDAO();
+
+        listaClientes = cDAO.listarClientes();
+        listaFornecedores = fDAO.listarFornecedores();
+        listaProdutos = pDAO.listarProdutos();
+
+        carregarCombo(cmb_Cliente, listaClientes, Cliente::getNome);
+        carregarCombo(cmb_Fornecedor, listaFornecedores, Fornecedor::getNome);
+        carregarCombo(cmb_Produto, listaProdutos, Produto::getNome);
         verificarTipoNota();
     }
 
@@ -73,7 +95,6 @@ public class CadastroNotas extends javax.swing.JFrame {
         lbl_QntdComprada = new javax.swing.JLabel();
         txt_Entrada = new javax.swing.JTextField();
         btn_Cadastrar = new javax.swing.JButton();
-        btn_Atualizar = new javax.swing.JButton();
         btn_Deletar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         txt_Data = new javax.swing.JTextField();
@@ -87,6 +108,7 @@ public class CadastroNotas extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         txt_NotaID = new javax.swing.JTextField();
         btn_Limpar = new javax.swing.JButton();
+        btn_Imprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -147,14 +169,8 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
         });
 
-        btn_Atualizar.setText("Atualizar");
-        btn_Atualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_AtualizarActionPerformed(evt);
-            }
-        });
-
         btn_Deletar.setText("Deletar");
+        btn_Deletar.setEnabled(false);
         btn_Deletar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_DeletarActionPerformed(evt);
@@ -171,6 +187,9 @@ public class CadastroNotas extends javax.swing.JFrame {
         });
 
         lbl_Estoque.setText("Estoque:");
+
+        txt_Estoque.setEditable(false);
+        txt_Estoque.setEnabled(false);
 
         btn_ListarNotas.setText("Listar Notas");
         btn_ListarNotas.addActionListener(new java.awt.event.ActionListener() {
@@ -200,51 +219,29 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
         });
 
+        btn_Imprimir.setText("Imprimir");
+        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ImprimirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(149, 149, 149)
-                        .addComponent(lbl_Titulo))
+                        .addGap(53, 53, 53)
+                        .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23)
+                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_Deletar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_Atualizar)
+                        .addGap(20, 20, 20)
+                        .addComponent(lbl_QntdComprada)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_Limpar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btn_Cadastrar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_DataAtual)))
-                .addContainerGap(206, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(53, 53, 53)
-                                .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(23, 23, 23)
-                                .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(lbl_QntdComprada)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lbl_QntdVendida)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btn_Menu)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_ListarNotas))
+                        .addComponent(lbl_QntdVendida))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,23 +259,55 @@ public class CadastroNotas extends javax.swing.JFrame {
                                     .addComponent(jLabel3))
                                 .addGap(12, 12, 12)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txt_NotaID, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cmb_Fornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
                                         .addComponent(lbl_Estoque)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txt_Estoque, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btn_Consultar)
+                                        .addComponent(txt_Estoque, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(cmb_Fornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txt_NotaID, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                .addComponent(btn_Consultar)
+                                                .addGroup(layout.createSequentialGroup()
+                                                    .addComponent(jLabel2)
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addComponent(txt_ID, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGap(98, 98, 98)
+                                                .addComponent(btn_ListarNotas)))))))))
+                .addGap(38, 38, 38))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
+                                .addGap(149, 149, 149)
+                                .addComponent(lbl_Titulo))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btn_Deletar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txt_ID, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+                                .addComponent(btn_Limpar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_Cadastrar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_Imprimir))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btn_DataAtual))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btn_Menu)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,13 +364,16 @@ public class CadastroNotas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Cadastrar)
-                    .addComponent(btn_Atualizar)
                     .addComponent(btn_Deletar)
-                    .addComponent(btn_Limpar))
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Menu)
-                    .addComponent(btn_ListarNotas))
+                    .addComponent(btn_Limpar)
+                    .addComponent(btn_Imprimir))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(btn_Menu))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(btn_ListarNotas)))
                 .addContainerGap())
         );
 
@@ -375,15 +407,15 @@ public class CadastroNotas extends javax.swing.JFrame {
 
             // busca objetos diretamente dos combos
             String nomeProduto = (String) cmb_Produto.getSelectedItem();
-            Produto produtoSelecionado = listaProdutos.stream()
-                    .filter(p -> p.getNome().equals(nomeProduto))
-                    .findFirst()
+            Produto produtoSelecionado = listaProdutos.stream() //Converte a lista em um Stream (fluxo de dados) para aplicar operações funcionais.
+                    .filter(p -> p.getNome().equals(nomeProduto)) //Filtra apenas os produtos que atendem a condição
+                    .findFirst() //Pega o primeiro elemento que passou no filtro
                     .orElse(null);
 
             // verificação do estoque apenas em notas de saída
             if (rbn_Saida.isSelected() && produtoSelecionado.getEstoque() < quantidade) {
                 JOptionPane.showMessageDialog(this, String.format(
-                        "⚠️ ESTOQUE INSUFICIENTE!\n\nProduto: %s\nEstoque disponível: %d\nSolicitado: %d",
+                        "ESTOQUE INSUFICIENTE!\n\nProduto: %s\nEstoque disponível: %d\nSolicitado: %d",
                         produtoSelecionado.getNome(),
                         produtoSelecionado.getEstoque(),
                         quantidade
@@ -415,8 +447,6 @@ public class CadastroNotas extends javax.swing.JFrame {
             notaDAO.inserirNota(nota);
             JOptionPane.showMessageDialog(this, "Nota cadastrada com sucesso!");
 
-            mostrarEstoqueProdutoSelecionado();
-
             limparCampos();
 
         } catch (SQLException ex) {
@@ -428,86 +458,15 @@ public class CadastroNotas extends javax.swing.JFrame {
         verificarTipoNota();
     }//GEN-LAST:event_btn_CadastrarActionPerformed
 
-    private void btn_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AtualizarActionPerformed
-        try {
-
-            // Obter dados atualizados
-            int notaId = Integer.parseInt(txt_NotaID.getText());
-            java.sql.Date novaData = java.sql.Date.valueOf(txt_Data.getText());
-
-            int novaQuantidade;
-            if (rbn_Entrada.isSelected()) {
-                novaQuantidade = Integer.parseInt(txt_Entrada.getText());
-            } else {
-                novaQuantidade = Integer.parseInt(txt_Saida.getText());
-            }
-
-            //Buscar a nota para ter o tipo (E ou S)
-            NotaDAO notaDAO = new NotaDAO();
-            Nota notaPrincipal = notaDAO.buscarNota(notaId);
-
-            if (notaPrincipal == null) {
-                JOptionPane.showMessageDialog(this, "Nota não encontrada!");
-                return;
-            }
-
-            //atualizando a data da nota
-            notaPrincipal.setData(novaData);
-            notaDAO.atualizarNota(notaPrincipal);
-
-            //atualizando a quantidade do item
-            NotaItemDAO itemDAO = new NotaItemDAO();
-            List<NotaItem> itens = itemDAO.listarItensPorNota(notaId);
-
-            if (itens.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nenhum item encontrado nesta nota!");
-                return;
-            }
-
-            //item da nota
-            NotaItem itemAntigo = itens.get(0);
-
-            //garantindo que o item antigo tenha a referência da nota
-            itemAntigo.setNota(notaPrincipal);
-
-            //cópia do item com nova quantidade
-            NotaItem itemNovo = new NotaItem();
-            itemNovo.setId(itemAntigo.getId());
-            itemNovo.setProduto(itemAntigo.getProduto());
-            itemNovo.setNota(notaPrincipal); // IMPORTANTE: usar a nota principal
-            itemNovo.setQuantidade(novaQuantidade);
-            itemNovo.setPreco(itemAntigo.getPreco());
-
-            // att o item (reverte estoque antigo e aplica novo)
-            itemDAO.atualizarItem(itemNovo, itemAntigo);
-
-            JOptionPane.showMessageDialog(this,
-                    "Nota atualizada com sucesso!\n\n"
-                    + "Data: " + novaData + "\n"
-                    + "Quantidade: " + novaQuantidade + "\n"
-                    + "Estoque ajustado automaticamente!");
-
-            limparCampos();
-            desbloquearCampos();
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar: " + e.getMessage());
-            e.printStackTrace();
-        }
-        
-        limparCampos();
-        desbloquearCampos();
-        verificarTipoNota();
-    }//GEN-LAST:event_btn_AtualizarActionPerformed
-
+    //verificar se usaremos a função deletar
     private void btn_DeletarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_DeletarActionPerformed
         try {
             int notaId = Integer.parseInt(txt_NotaID.getText().trim());
 
             int confirma = JOptionPane.showConfirmDialog(this,
                     "Deseja excluir a nota #" + notaId + "?\n\n"
-                    + "• Excluirá a nota e todos os itens\n"
-                    + "• Reverterá o estoque dos produtos",
+                    + "Excluirá a nota e todos os itens\n"
+                    + "Reverterá o estoque dos produtos",
                     "Confirmar Exclusão",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.WARNING_MESSAGE);
@@ -537,6 +496,15 @@ public class CadastroNotas extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_DataAtualActionPerformed
 
     private void cmb_ProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_ProdutoActionPerformed
+        String nomeProduto = (String) cmb_Produto.getSelectedItem();
+        if (nomeProduto == null || nomeProduto.isEmpty()) {
+            return;
+        }
+
+        listaProdutos.stream()
+                .filter(p -> p.getNome().equals(nomeProduto))
+                .findFirst()
+                .ifPresent(p -> txt_Estoque.setText(String.valueOf(p.getEstoque())));
         mostrarEstoqueProdutoSelecionado();
     }//GEN-LAST:event_cmb_ProdutoActionPerformed
 
@@ -553,10 +521,18 @@ public class CadastroNotas extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_ListarNotasActionPerformed
 
     private void btn_ConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ConsultarActionPerformed
-        preencherCamposComNota();
+        consultarNotaPorId();
         rbn_Entrada.setEnabled(false);
         rbn_Saida.setEnabled(false);
         cmb_Produto.setEnabled(false);
+        cmb_Cliente.setEnabled(false);
+        cmb_Fornecedor.setEnabled(false);
+        txt_Data.setEnabled(false);
+        txt_Entrada.setEnabled(false);
+        txt_Saida.setEnabled(false);
+        btn_DataAtual.setEnabled(false);
+        btn_Deletar.setEnabled(false);
+        btn_Cadastrar.setEnabled(false);
     }//GEN-LAST:event_btn_ConsultarActionPerformed
 
     private void btn_LimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_LimparActionPerformed
@@ -565,61 +541,185 @@ public class CadastroNotas extends javax.swing.JFrame {
         verificarTipoNota();
     }//GEN-LAST:event_btn_LimparActionPerformed
 
-    private void carregarComboCliente() {
-        ClienteDAO cDAO = new ClienteDAO();
-        listaClientes = cDAO.listarClientes();
-
-        cmb_Cliente.removeAllItems();
-
-        for (Cliente c : listaClientes) {
-            cmb_Cliente.addItem(c.getNome());
-        }
-    }
-
-    private void carregarComboFornecedor() {
-        FornecedorDAO fDAO = new FornecedorDAO();
-        listaFornecedores = fDAO.listarFornecedores();
-
-        cmb_Fornecedor.removeAllItems();
-
-        for (Fornecedor f : listaFornecedores) {
-            cmb_Fornecedor.addItem(f.getNome());
-        }
-    }
-
-    private void carregarComboProduto() {
-        ProdutoDAO pDAO = new ProdutoDAO();
-        listaProdutos = pDAO.listarProdutos();
-
-        cmb_Produto.removeAllItems();
-
-        for (Produto p : listaProdutos) {
-            cmb_Produto.addItem(p.getNome());
-        }
-    }
-
-    //estoque
-    private void mostrarEstoqueProdutoSelecionado() {
+    private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
         try {
-            String nomeProduto = (String) cmb_Produto.getSelectedItem();
+            int notaId = Integer.parseInt(txt_NotaID.getText());
 
-            if (nomeProduto == null || nomeProduto.isEmpty()) {
-                txt_Estoque.setText("—");
+            //buscar dados completos da nota
+            NotaDAO notaDAO = new NotaDAO();
+            Nota nota = notaDAO.buscarNota(notaId);
+
+            if (nota == null) {
+                JOptionPane.showMessageDialog(this, "Nota não encontrada!");
                 return;
             }
 
-            ProdutoDAO produtoDAO = new ProdutoDAO();
-            Produto produtoAtualizado = produtoDAO.buscarProdutoPorNome(nomeProduto);
+            //buscar o item da nota
+            NotaItemDAO itemDAO = new NotaItemDAO();
+            List<NotaItem> itens = itemDAO.listarItensPorNota(notaId);
 
-            if (produtoAtualizado != null) {
-                txt_Estoque.setText(String.valueOf(produtoAtualizado.getEstoque()));
-            } else {
-                txt_Estoque.setText("0");
+            if (itens.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nenhum item encontrado nesta nota!");
+                return;
             }
 
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao mostrar estoque: " + ex.getMessage());
+            //pegar o primeiro (e único) item nota
+            NotaItem item = itens.get(0);
+
+            //gerando o pdf
+            gerarPDFNota(nota, item);
+
+            JOptionPane.showMessageDialog(this,
+                    "PDF gerado com sucesso!\n\n"
+                    + "Arquivo: Nota_" + notaId + ".pdf");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao gerar PDF: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    //gerando o pdf
+    private void gerarPDFNota(Nota nota, NotaItem item) throws Exception {
+        // Define o caminho do arquivo PDF
+        String nomeArquivo = "Nota_" + nota.getId() + ".pdf";
+        Document document = new Document(PageSize.A4);
+
+        try {
+            // Cria o escritor do PDF
+            PdfWriter.getInstance(document, new FileOutputStream(nomeArquivo));
+            document.open();
+
+            // header
+            Font fontTitulo = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Font fontSubtitulo = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+            Font fontNormal = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL);
+
+            Paragraph titulo = new Paragraph("NOTA FISCAL", fontTitulo);
+            titulo.setAlignment(Element.ALIGN_CENTER);
+            titulo.setSpacingAfter(10);
+            document.add(titulo);
+
+            // tipo nota
+            String tipoNota = nota.getTipo().equals("E") ? "ENTRADA (COMPRA)" : "SAÍDA (VENDA)";
+            Paragraph tipo = new Paragraph(tipoNota, fontSubtitulo);
+            tipo.setAlignment(Element.ALIGN_CENTER);
+            tipo.setSpacingAfter(20);
+            document.add(tipo);
+
+            //info nota
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+            Paragraph notaNumero = new Paragraph("Nota Nº: " + nota.getId(), fontSubtitulo);
+            notaNumero.setSpacingBefore(10);
+            document.add(notaNumero);
+
+            Paragraph notaData = new Paragraph("Data: " + sdf.format(nota.getData()), fontNormal);
+            notaData.setSpacingAfter(15);
+            document.add(notaData);
+
+            //add cliente ou fornecedor
+            if (nota.getTipo().equals("E") && nota.getFornecedor() != null) {
+                document.add(new Paragraph("Fornecedor:", fontSubtitulo));
+                document.add(new Paragraph(nota.getFornecedor().getNome(), fontNormal));
+                document.add(new Paragraph("CNPJ: " + nota.getFornecedor().getCnpj(), fontNormal));
+                document.add(new Paragraph("Telefone: " + nota.getFornecedor().getTelefone(), fontNormal));
+                document.add(new Paragraph("Email: " + nota.getFornecedor().getEmail(), fontNormal));
+                document.add(new Paragraph("CEP: " + nota.getFornecedor().getCEP(), fontNormal));
+                document.add(new Paragraph("Cidade: " + nota.getFornecedor().getCidade(), fontNormal));
+                document.add(new Paragraph("UF: " + nota.getFornecedor().getUF(), fontNormal));
+            } else if (nota.getTipo().equals("S") && nota.getCliente() != null) {
+                document.add(new Paragraph("Cliente:", fontSubtitulo));
+                document.add(new Paragraph(nota.getCliente().getNome(), fontNormal));
+                document.add(new Paragraph("Telefone: " + nota.getCliente().getTelefone(), fontNormal));
+                document.add(new Paragraph("Email: " + nota.getCliente().getEmail(), fontNormal));
+                document.add(new Paragraph("CEP: " + nota.getCliente().getCEP(), fontNormal));
+                document.add(new Paragraph("Cidade: " + nota.getCliente().getCidade(), fontNormal));
+                document.add(new Paragraph("UF: " + nota.getCliente().getUF(), fontNormal));
+            }
+
+            //info do produto
+            Paragraph tituloProduto = new Paragraph("Produto", fontSubtitulo);
+            tituloProduto.setSpacingBefore(10);
+            tituloProduto.setSpacingAfter(10);
+            document.add(tituloProduto);
+
+            PdfPTable tabelaProduto = new PdfPTable(2);
+            tabelaProduto.setWidthPercentage(100);
+            tabelaProduto.setWidths(new float[]{1, 2});
+
+            Font fontLabel = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+
+            //código do Produto
+            PdfPCell cellLabelCodigo = new PdfPCell(new Phrase("Código:", fontLabel));
+            cellLabelCodigo.setBorder(Rectangle.NO_BORDER);
+            cellLabelCodigo.setPadding(5);
+            tabelaProduto.addCell(cellLabelCodigo);
+
+            PdfPCell cellValueCodigo = new PdfPCell(new Phrase(String.valueOf(item.getProduto().getId()), fontNormal));
+            cellValueCodigo.setBorder(Rectangle.NO_BORDER);
+            cellValueCodigo.setPadding(5);
+            tabelaProduto.addCell(cellValueCodigo);
+
+            //nome do Produto
+            PdfPCell cellLabelNome = new PdfPCell(new Phrase("Produto:", fontLabel));
+            cellLabelNome.setBorder(Rectangle.NO_BORDER);
+            cellLabelNome.setPadding(5);
+            tabelaProduto.addCell(cellLabelNome);
+
+            PdfPCell cellValueNome = new PdfPCell(new Phrase(item.getProduto().getNome(), fontNormal));
+            cellValueNome.setBorder(Rectangle.NO_BORDER);
+            cellValueNome.setPadding(5);
+            tabelaProduto.addCell(cellValueNome);
+
+            //quantidade
+            PdfPCell cellLabelQtd = new PdfPCell(new Phrase("Quantidade:", fontLabel));
+            cellLabelQtd.setBorder(Rectangle.NO_BORDER);
+            cellLabelQtd.setPadding(5);
+            tabelaProduto.addCell(cellLabelQtd);
+
+            PdfPCell cellValueQtd = new PdfPCell(new Phrase(String.valueOf(item.getQuantidade()), fontNormal));
+            cellValueQtd.setBorder(Rectangle.NO_BORDER);
+            cellValueQtd.setPadding(5);
+            tabelaProduto.addCell(cellValueQtd);
+
+            //preço unitário
+            PdfPCell cellLabelPreco = new PdfPCell(new Phrase("Preço Unitário:", fontLabel));
+            cellLabelPreco.setBorder(Rectangle.NO_BORDER);
+            cellLabelPreco.setPadding(5);
+            tabelaProduto.addCell(cellLabelPreco);
+
+            PdfPCell cellValuePreco = new PdfPCell(new Phrase(String.format("R$ %.2f", item.getPreco()), fontNormal));
+            cellValuePreco.setBorder(Rectangle.NO_BORDER);
+            cellValuePreco.setPadding(5);
+            tabelaProduto.addCell(cellValuePreco);
+
+            document.add(tabelaProduto);
+
+            //total da nota
+            float valorTotal = item.getPreco() * item.getQuantidade();
+
+            Paragraph totalGeral = new Paragraph(
+                    "VALOR TOTAL: R$ " + String.format("%.2f", valorTotal),
+                    new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD)
+            );
+            totalGeral.setAlignment(Element.ALIGN_RIGHT);
+            totalGeral.setSpacingBefore(20);
+            document.add(totalGeral);
+
+            System.out.println("PDF gerado: " + nomeArquivo);
+
+        } finally {
+            if (document != null && document.isOpen()) {
+                document.close();
+            }
+        }
+    }//GEN-LAST:event_btn_ImprimirActionPerformed
+
+    // Método genérico para carregar combos
+    private <T> void carregarCombo(javax.swing.JComboBox<String> combo, List<T> lista, java.util.function.Function<T, String> getNome) {
+        combo.removeAllItems();
+        lista.forEach(obj -> combo.addItem(getNome.apply(obj)));
     }
 
     //entrada ou saida
@@ -634,10 +734,14 @@ public class CadastroNotas extends javax.swing.JFrame {
         if (entradaSelecionada) {
             txt_Saida.setText("");
             lbl_QntdComprada.setEnabled(true);
+            cmb_Cliente.setSelectedIndex(-1);
+            cmb_Fornecedor.setSelectedIndex(0);
             lbl_QntdVendida.setEnabled(false);
         } else {
             txt_Entrada.setText("");
             lbl_QntdComprada.setEnabled(false);
+            cmb_Fornecedor.setSelectedIndex(-1);
+            cmb_Cliente.setSelectedIndex(0);
             lbl_QntdVendida.setEnabled(true);
         }
     }
@@ -662,9 +766,15 @@ public class CadastroNotas extends javax.swing.JFrame {
     private void desbloquearCampos() {
         rbn_Entrada.setEnabled(true);
         rbn_Saida.setEnabled(true);
+        cmb_Produto.setEnabled(true);
         cmb_Cliente.setEnabled(true);
         cmb_Fornecedor.setEnabled(true);
-        cmb_Produto.setEnabled(true);
+        txt_Data.setEnabled(true);
+        txt_Entrada.setEnabled(true);
+        txt_Saida.setEnabled(true);
+        btn_DataAtual.setEnabled(true);
+        btn_Deletar.setEnabled(true);
+        btn_Cadastrar.setEnabled(true);
     }
 
     //pega os dados digitados na tela e monta um objeto Nota para enviar ao banco
@@ -688,9 +798,9 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
 
             String nomeProduto = (String) cmb_Produto.getSelectedItem();
-            Produto produto = listaProdutos.stream()
-                    .filter(p -> p.getNome().equals(nomeProduto))
-                    .findFirst()
+            Produto produto = listaProdutos.stream() //Converte a lista em um Stream (fluxo de dados) para aplicar operações funcionais.
+                    .filter(p -> p.getNome().equals(nomeProduto)) //Filtra apenas os produtos que atendem a condição
+                    .findFirst() //Pega o primeiro elemento que passou no filtro
                     .orElse(null);
 
             int quantidade = rbn_Entrada.isSelected()
@@ -722,47 +832,70 @@ public class CadastroNotas extends javax.swing.JFrame {
     }
 
     //Método para preencher os campos da tela
-    public void preencherCamposComNota(Nota nota) {
-        try {
-            txt_Data.setText(nota.getData().toString());
-            txt_NotaID.setText(Integer.toString(nota.getId()));
+    public void exibirNotaNosCampos(Nota nota) throws SQLException {
+        txt_NotaID.setText(String.valueOf(nota.getId()));
+        txt_Data.setText(String.valueOf(nota.getData()));
+        if ("E".equals(nota.getTipo())) {
+            rbn_Entrada.setSelected(true);
+        } else {
+            rbn_Saida.setSelected(true);
+        }
+        verificarTipoNota();
+
+        //dependendo da entrada, mostra só o nome da nota
+        if (nota.getCliente() != null) {
+            cmb_Cliente.setSelectedItem(nota.getCliente().getNome());
+        } else {
+            cmb_Cliente.setSelectedIndex(-1);
+        }
+
+        if (nota.getFornecedor() != null) {
+            cmb_Fornecedor.setSelectedItem(nota.getFornecedor().getNome());
+        } else {
+            cmb_Fornecedor.setSelectedIndex(-1);
+        }
+
+        List<NotaItem> itens = carregarItensComNota(nota);
+        nota.setItens(itens);
+
+        if (!itens.isEmpty()) {
+            NotaItem primeiroItem = itens.get(0);
+            cmb_Produto.setSelectedItem(primeiroItem.getProduto().getNome());
             if ("E".equals(nota.getTipo())) {
-                rbn_Entrada.setSelected(true);
+                txt_Entrada.setText(String.valueOf(primeiroItem.getQuantidade()));
             } else {
-                rbn_Saida.setSelected(true);
+                txt_Saida.setText(String.valueOf(primeiroItem.getQuantidade()));
             }
-            verificarTipoNota();
+        }
+    }
 
-            if (nota.getCliente() != null) {
-                cmb_Cliente.setSelectedItem(nota.getCliente().getNome());
-            }
-            if (nota.getFornecedor() != null) {
-                cmb_Fornecedor.setSelectedItem(nota.getFornecedor().getNome());
+    //att estoque ao cadastrar vice-versa
+    private void mostrarEstoqueProdutoSelecionado() {
+        try {
+            String nomeProduto = (String) cmb_Produto.getSelectedItem();
 
-            }
-
-            List<NotaItem> itens = carregarItensComNota(nota);
-            nota.setItens(itens);
-
-            if (!itens.isEmpty()) {
-                NotaItem primeiroItem = itens.get(0);
-                cmb_Produto.setSelectedItem(primeiroItem.getProduto().getNome());
-                if ("E".equals(nota.getTipo())) {
-                    txt_Entrada.setText(String.valueOf(primeiroItem.getQuantidade()));
-                } else {
-                    txt_Saida.setText(String.valueOf(primeiroItem.getQuantidade()));
-                }
+            if (nomeProduto == null || nomeProduto.isEmpty()) {
+                txt_Estoque.setText("—");
+                return;
             }
 
-            JOptionPane.showMessageDialog(this, "Nota #" + nota.getId() + " carregada!");
+            ProdutoDAO produtoDAO = new ProdutoDAO();
+            Produto produtoAtualizado = produtoDAO.buscarProdutoPorNome(nomeProduto);
+
+            if (produtoAtualizado != null) {
+                txt_Estoque.setText(String.valueOf(produtoAtualizado.getEstoque()));
+            } else {
+                txt_Estoque.setText("0");
+            }
+
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar nota: " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro ao mostrar estoque: " + ex.getMessage());
         }
     }
 
     //Método sem parametro pega o ID digitado, busca no banco, 
     //e depois chama o outro método para preencher, o de cima.
-    private void preencherCamposComNota() {
+    private void consultarNotaPorId() {
         try {
             String idTexto = txt_ID.getText();
             if (idTexto.isEmpty()) {
@@ -786,61 +919,11 @@ public class CadastroNotas extends javax.swing.JFrame {
                 return;
             }
 
-            preencherCamposComNota(nota);
+            exibirNotaNosCampos(nota);
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao consultar nota: " + ex.getMessage());
         }
-    }
-
-    private Nota montarNotaParaAtualizacao() throws SQLException {
-        //campo de consulta/ID
-        int notaId = Integer.parseInt(txt_ID.getText().trim());
-
-        NotaDAO notaDAO = new NotaDAO();
-
-        //busca a nota original (para manter Tipo, Cliente, Fornecedor, etc.)
-        Nota notaOriginal = notaDAO.buscarNota(notaId);
-
-        if (notaOriginal == null) {
-            throw new SQLException("Nota com ID " + notaId + " não encontrada no banco de dados.");
-        }
-
-        //item associado
-        NotaItemDAO itemDAO = new NotaItemDAO();
-        List<NotaItem> itens = itemDAO.listarItensPorNota(notaId);
-
-        if (itens == null || itens.isEmpty()) {
-            throw new SQLException("A nota consultada não possui itens para serem atualizados.");
-        }
-
-        //aplica as Alterações
-        //nova Data
-        java.sql.Date novaData = java.sql.Date.valueOf(txt_Data.getText().trim());
-        notaOriginal.setData(novaData);
-
-        //nova qntd no item
-        NotaItem unicoItem = itens.get(0);
-
-        String qntdTexto = notaOriginal.getTipo().equals("E")
-                ? txt_Entrada.getText().trim()
-                : txt_Saida.getText().trim();
-
-        if (qntdTexto.isEmpty()) {
-            throw new NumberFormatException("A quantidade não pode ser vazia.");
-        }
-
-        int novaQuantidade = Integer.parseInt(qntdTexto);
-
-        if (novaQuantidade <= 0) {
-            throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
-        }
-
-        unicoItem.setQuantidade(novaQuantidade);
-
-        notaOriginal.setItens(itens);
-
-        return notaOriginal;
     }
 
     private List<NotaItem> carregarItensComNota(Nota nota) throws SQLException {
@@ -888,12 +971,12 @@ public class CadastroNotas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_Atualizar;
     private javax.swing.JButton btn_Cadastrar;
     private javax.swing.JButton btn_Consultar;
     private javax.swing.JButton btn_DataAtual;
     private javax.swing.JButton btn_Deletar;
     private javax.swing.ButtonGroup btn_GrpTipoNota;
+    private javax.swing.JButton btn_Imprimir;
     private javax.swing.JButton btn_Limpar;
     private javax.swing.JButton btn_ListarNotas;
     private javax.swing.JButton btn_Menu;
