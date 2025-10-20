@@ -264,13 +264,10 @@ public class CadastroCliente extends javax.swing.JFrame {
                     .addComponent(btn_Atualizar)
                     .addComponent(btn_Deletar)
                     .addComponent(btn_Limpar))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(btn_Menu))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_ListaCliente)))
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_Menu)
+                    .addComponent(btn_ListaCliente))
                 .addContainerGap())
         );
 
@@ -303,7 +300,7 @@ public class CadastroCliente extends javax.swing.JFrame {
 
     private void btn_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AtualizarActionPerformed
         Cliente cliente = new Cliente();
-        cliente.setID(Integer.parseInt(txt_ID.getText()));
+        cliente.setID(Integer.parseInt(txt_ClienteID.getText()));
         cliente.setNome(txt_Nome.getText());
         cliente.setRua(txt_Rua.getText());
         cliente.setBairro(txt_Bairro.getText());
@@ -420,7 +417,6 @@ public class CadastroCliente extends javax.swing.JFrame {
     private javax.swing.JButton btn_Consultar;
     private javax.swing.JButton btn_Deletar;
     private javax.swing.JButton btn_Limpar;
-    private javax.swing.JButton btn_Limpe;
     private javax.swing.JButton btn_ListaCliente;
     private javax.swing.JButton btn_Menu;
     private javax.swing.JLabel jLabel1;

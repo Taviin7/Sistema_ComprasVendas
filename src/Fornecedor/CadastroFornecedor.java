@@ -330,7 +330,7 @@ public class CadastroFornecedor extends javax.swing.JFrame {
 
     private void btn_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AtualizarActionPerformed
         Fornecedor fornecedor = new Fornecedor();
-        fornecedor.setID(Integer.parseInt(txt_ID.getText()));
+        fornecedor.setID(Integer.parseInt(txt_FornecedorID.getText()));
         fornecedor.setNome(txt_Nome.getText());
         fornecedor.setNomeFantasia(txt_NomeFantasia.getText());
         fornecedor.setCnpj(txt_CNPJ.getText());
@@ -407,6 +407,7 @@ public class CadastroFornecedor extends javax.swing.JFrame {
         txt_Email.setText("");
         txt_Telefone.setText("");
         txt_ID.setText("");
+        txt_FornecedorID.setText("");
     }
 
     /**

@@ -38,6 +38,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPCell;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -109,6 +110,11 @@ public class CadastroNotas extends javax.swing.JFrame {
         txt_NotaID = new javax.swing.JTextField();
         btn_Limpar = new javax.swing.JButton();
         btn_Imprimir = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblItensNota = new javax.swing.JTable();
+        lbl_TituloTable = new javax.swing.JLabel();
+        btn_RemoverItem = new javax.swing.JButton();
+        btn_AddProduto = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -226,105 +232,130 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
         });
 
+        tblItensNota.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Código", "Nome", "Valor", "Quantidade"
+            }
+        ));
+        jScrollPane1.setViewportView(tblItensNota);
+
+        lbl_TituloTable.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        lbl_TituloTable.setText("Produtos na nota");
+
+        btn_RemoverItem.setBackground(new java.awt.Color(255, 49, 49));
+        btn_RemoverItem.setText("Remover Item Selecionado");
+        btn_RemoverItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_RemoverItemActionPerformed(evt);
+            }
+        });
+
+        btn_AddProduto.setText("Adicionar");
+        btn_AddProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_AddProdutoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(53, 53, 53)
-                        .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23)
-                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(lbl_QntdComprada)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lbl_QntdVendida))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lbl_TipoNota)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(rbn_Entrada)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(rbn_Saida))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbl_Fornecedor)
-                                    .addComponent(lbl_Cliente)
-                                    .addComponent(lbl_Produto)
-                                    .addComponent(jLabel3))
-                                .addGap(12, 12, 12)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btn_Menu)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(btn_DataAtual))
+                                        .addComponent(btn_Cadastrar)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(lbl_Estoque)
+                                        .addComponent(lbl_QntdComprada)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txt_Estoque, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(33, 33, 33)
+                                        .addComponent(lbl_QntdVendida)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(lbl_Fornecedor)
+                                            .addComponent(lbl_Cliente)
+                                            .addComponent(lbl_Produto)
+                                            .addComponent(jLabel3))
+                                        .addGap(12, 12, 12)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(lbl_Estoque)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(txt_Estoque, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
                                             .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addComponent(cmb_Fornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txt_NotaID, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                .addComponent(btn_Consultar)
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addComponent(jLabel2)
-                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                    .addComponent(txt_ID, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addGap(98, 98, 98)
-                                                .addComponent(btn_ListarNotas)))))))))
-                .addGap(38, 38, 38))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txt_NotaID, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lbl_TipoNota)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(rbn_Entrada)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(rbn_Saida)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(149, 149, 149)
-                                .addComponent(lbl_Titulo))
-                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
                                 .addComponent(btn_Deletar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btn_Limpar)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn_Cadastrar)
+                                .addComponent(btn_AddProduto)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn_Imprimir))
+                                .addComponent(btn_Imprimir)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn_ListarNotas)))
+                        .addGap(60, 67, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lbl_TituloTable)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
+                                .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btn_DataAtual))))
+                                .addComponent(txt_ID, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btn_Consultar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btn_RemoverItem))))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btn_Menu)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbl_Titulo)
+                        .addGap(386, 386, 386)))
+                .addGap(0, 17, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(lbl_Titulo)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(txt_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(11, 11, 11)
-                        .addComponent(btn_Consultar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lbl_Titulo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addComponent(lbl_TituloTable)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txt_NotaID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
@@ -342,39 +373,40 @@ public class CadastroNotas extends javax.swing.JFrame {
                             .addComponent(cmb_Produto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txt_Estoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_Estoque))
-                        .addGap(21, 21, 21)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbl_TipoNota)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(rbn_Entrada)
                                 .addComponent(rbn_Saida)))
-                        .addGap(18, 18, 18)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbl_QntdComprada)
+                            .addComponent(lbl_QntdVendida)
+                            .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_Deletar)
+                            .addComponent(btn_Limpar)
+                            .addComponent(btn_Imprimir)
+                            .addComponent(btn_ListarNotas)
+                            .addComponent(btn_AddProduto))))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_QntdComprada)
-                    .addComponent(lbl_QntdVendida))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_Entrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_Saida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_DataAtual)
+                    .addComponent(jLabel1)
                     .addComponent(txt_Data, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(btn_DataAtual)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_RemoverItem)
+                        .addComponent(jLabel2)
+                        .addComponent(txt_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_Consultar)))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Cadastrar)
-                    .addComponent(btn_Deletar)
-                    .addComponent(btn_Limpar)
-                    .addComponent(btn_Imprimir))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(btn_Menu))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_ListarNotas)))
-                .addContainerGap())
+                    .addComponent(btn_Menu))
+                .addGap(39, 39, 39))
         );
 
         pack();
@@ -382,72 +414,62 @@ public class CadastroNotas extends javax.swing.JFrame {
 
     private void btn_CadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CadastrarActionPerformed
         try {
-            // Validações essenciais
+            // Validar data
             if (txt_Data.getText().trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, informe a data da nota!");
                 return;
             }
 
-            int quantidade;
-            try {
-                if (rbn_Entrada.isSelected()) {
-                    quantidade = Integer.parseInt(txt_Entrada.getText().trim());
-                } else {
-                    quantidade = Integer.parseInt(txt_Saida.getText().trim());
-                }
-
-                if (quantidade <= 0) {
-                    JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero!");
-                    return;
-                }
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Informe uma quantidade válida!");
+            // Validar se há itens na tabela
+            DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+            if (dtmItens.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Adicione pelo menos um item à nota!");
                 return;
             }
 
-            // busca objetos diretamente dos combos
-            String nomeProduto = (String) cmb_Produto.getSelectedItem();
-            Produto produtoSelecionado = listaProdutos.stream() //Converte a lista em um Stream (fluxo de dados) para aplicar operações funcionais.
-                    .filter(p -> p.getNome().equals(nomeProduto)) //Filtra apenas os produtos que atendem a condição
-                    .findFirst() //Pega o primeiro elemento que passou no filtro
-                    .orElse(null);
-
-            // verificação do estoque apenas em notas de saída
-            if (rbn_Saida.isSelected() && produtoSelecionado.getEstoque() < quantidade) {
-                JOptionPane.showMessageDialog(this, String.format(
-                        "ESTOQUE INSUFICIENTE!\n\nProduto: %s\nEstoque disponível: %d\nSolicitado: %d",
-                        produtoSelecionado.getNome(),
-                        produtoSelecionado.getEstoque(),
-                        quantidade
-                ));
-                return;
-            }
-
-            //montando a nota
+            // Montar a nota
             Nota nota = new Nota();
             nota.setData(java.sql.Date.valueOf(txt_Data.getText().trim()));
             nota.setTipo(rbn_Entrada.isSelected() ? "E" : "S");
 
-            //cliente ou fornecedor
+            // Cliente ou fornecedor
             if (rbn_Saida.isSelected()) {
                 nota.setCliente(listaClientes.get(cmb_Cliente.getSelectedIndex()));
             } else {
                 nota.setFornecedor(listaFornecedores.get(cmb_Fornecedor.getSelectedIndex()));
             }
 
-            //criando o item e adicionando-o
-            NotaItem item = new NotaItem();
-            item.setProduto(produtoSelecionado);
-            item.setQuantidade(quantidade);
-            item.setPreco(produtoSelecionado.getPrecoUnitario());
+            // Criar lista de itens a partir da tabela
+            List<NotaItem> itens = new ArrayList<>();
+            for (int i = 0; i < dtmItens.getRowCount(); i++) {
+                int produtoId = (int) dtmItens.getValueAt(i, 0);
+                int quantidade = (int) dtmItens.getValueAt(i, 3);
 
-            nota.setItens(List.of(item));
+                // Buscar produto completo
+                Produto produto = listaProdutos.stream()
+                        .filter(p -> p.getId() == produtoId)
+                        .findFirst()
+                        .orElse(null);
 
+                if (produto != null) {
+                    NotaItem item = new NotaItem();
+                    item.setProduto(produto);
+                    item.setQuantidade(quantidade);
+                    item.setPreco(produto.getPrecoUnitario());
+                    itens.add(item);
+                }
+            }
+
+            nota.setItens(itens);
+
+            // Salvar no banco
             NotaDAO notaDAO = new NotaDAO();
             notaDAO.inserirNota(nota);
+
             JOptionPane.showMessageDialog(this, "Nota cadastrada com sucesso!");
 
             limparCampos();
+            limparTabela();
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao cadastrar nota: " + ex.getMessage());
@@ -483,10 +505,30 @@ public class CadastroNotas extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_DeletarActionPerformed
 
     private void rbn_EntradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbn_EntradaActionPerformed
+        // Verificar se há itens na tabela antes de permitir mudança
+        DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+        if (dtmItens.getRowCount() > 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Não é possível alterar o tipo da nota após adicionar itens!\n"
+                    + "Limpe a tabela primeiro ou remova todos os itens.");
+            // Volta para o estado anterior
+            rbn_Saida.setSelected(true);
+            return;
+        }
         verificarTipoNota();
     }//GEN-LAST:event_rbn_EntradaActionPerformed
 
     private void rbn_SaidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbn_SaidaActionPerformed
+        // Verificar se há itens na tabela antes de permitir mudança
+        DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+        if (dtmItens.getRowCount() > 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Não é possível alterar o tipo da nota após adicionar itens!\n"
+                    + "Limpe a tabela primeiro ou remova todos os itens.");
+            // Volta para o estado anterior
+            rbn_Entrada.setSelected(true);
+            return;
+        }
         verificarTipoNota();
     }//GEN-LAST:event_rbn_SaidaActionPerformed
 
@@ -522,6 +564,8 @@ public class CadastroNotas extends javax.swing.JFrame {
 
     private void btn_ConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ConsultarActionPerformed
         consultarNotaPorId();
+
+        // Bloquear campos de edição
         rbn_Entrada.setEnabled(false);
         rbn_Saida.setEnabled(false);
         cmb_Produto.setEnabled(false);
@@ -531,14 +575,20 @@ public class CadastroNotas extends javax.swing.JFrame {
         txt_Entrada.setEnabled(false);
         txt_Saida.setEnabled(false);
         btn_DataAtual.setEnabled(false);
-        btn_Deletar.setEnabled(false);
+        btn_AddProduto.setEnabled(false);
+        btn_RemoverItem.setEnabled(false);
+
+        // Habilitar apenas funcionalidades de visualização
+        btn_Deletar.setEnabled(true);
         btn_Cadastrar.setEnabled(false);
+        btn_Imprimir.setEnabled(true);
     }//GEN-LAST:event_btn_ConsultarActionPerformed
 
     private void btn_LimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_LimparActionPerformed
         limparCampos();
         desbloquearCampos();
         verificarTipoNota();
+        limparTabela();
     }//GEN-LAST:event_btn_LimparActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
@@ -554,7 +604,7 @@ public class CadastroNotas extends javax.swing.JFrame {
                 return;
             }
 
-            //buscar o item da nota
+            //buscar os itens da nota
             NotaItemDAO itemDAO = new NotaItemDAO();
             List<NotaItem> itens = itemDAO.listarItensPorNota(notaId);
 
@@ -563,11 +613,8 @@ public class CadastroNotas extends javax.swing.JFrame {
                 return;
             }
 
-            //pegar o primeiro (e único) item nota
-            NotaItem item = itens.get(0);
-
-            //gerando o pdf
-            gerarPDFNota(nota, item);
+            // Gerar o PDF com TODOS os itens
+            gerarPDFNota(nota, itens);
 
             JOptionPane.showMessageDialog(this,
                     "PDF gerado com sucesso!\n\n"
@@ -580,7 +627,7 @@ public class CadastroNotas extends javax.swing.JFrame {
     }
 
     //gerando o pdf
-    private void gerarPDFNota(Nota nota, NotaItem item) throws Exception {
+    private void gerarPDFNota(Nota nota, List<NotaItem> itens) throws Exception {
         // Define o caminho do arquivo PDF
         String nomeArquivo = "Nota_" + nota.getId() + ".pdf";
         Document document = new Document(PageSize.A4);
@@ -638,67 +685,71 @@ public class CadastroNotas extends javax.swing.JFrame {
                 document.add(new Paragraph("UF: " + nota.getCliente().getUF(), fontNormal));
             }
 
-            //info do produto
-            Paragraph tituloProduto = new Paragraph("Produto", fontSubtitulo);
-            tituloProduto.setSpacingBefore(10);
-            tituloProduto.setSpacingAfter(10);
-            document.add(tituloProduto);
+            // Título dos produtos
+            Paragraph tituloProdutos = new Paragraph("Produtos", fontSubtitulo);
+            tituloProdutos.setSpacingBefore(20);
+            tituloProdutos.setSpacingAfter(10);
+            document.add(tituloProdutos);
 
-            PdfPTable tabelaProduto = new PdfPTable(2);
-            tabelaProduto.setWidthPercentage(100);
-            tabelaProduto.setWidths(new float[]{1, 2});
+            // Tabela de produtos
+            PdfPTable tabelaProdutos = new PdfPTable(5); // 5 colunas: Código, Produto, Qtd, Preço Unit., Subtotal
+            tabelaProdutos.setWidthPercentage(100);
+            tabelaProdutos.setWidths(new float[]{1, 3, 1.5f, 1.5f, 1.5f});
 
-            Font fontLabel = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD);
+            Font fontHeader = new Font(Font.FontFamily.HELVETICA, 10, Font.BOLD, BaseColor.WHITE);
 
-            //código do Produto
-            PdfPCell cellLabelCodigo = new PdfPCell(new Phrase("Código:", fontLabel));
-            cellLabelCodigo.setBorder(Rectangle.NO_BORDER);
-            cellLabelCodigo.setPadding(5);
-            tabelaProduto.addCell(cellLabelCodigo);
+            // Cabeçalho da tabela
+            PdfPCell cellHeader;
+            String[] headers = {"Código", "Produto", "Quantidade", "Preço Unit.", "Subtotal"};
 
-            PdfPCell cellValueCodigo = new PdfPCell(new Phrase(String.valueOf(item.getProduto().getId()), fontNormal));
-            cellValueCodigo.setBorder(Rectangle.NO_BORDER);
-            cellValueCodigo.setPadding(5);
-            tabelaProduto.addCell(cellValueCodigo);
+            for (String header : headers) {
+                cellHeader = new PdfPCell(new Phrase(header, fontHeader));
+                cellHeader.setBackgroundColor(BaseColor.DARK_GRAY);
+                cellHeader.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cellHeader.setPadding(5);
+                tabelaProdutos.addCell(cellHeader);
+            }
 
-            //nome do Produto
-            PdfPCell cellLabelNome = new PdfPCell(new Phrase("Produto:", fontLabel));
-            cellLabelNome.setBorder(Rectangle.NO_BORDER);
-            cellLabelNome.setPadding(5);
-            tabelaProduto.addCell(cellLabelNome);
+            // Adicionar cada item na tabela
+            float valorTotal = 0;
 
-            PdfPCell cellValueNome = new PdfPCell(new Phrase(item.getProduto().getNome(), fontNormal));
-            cellValueNome.setBorder(Rectangle.NO_BORDER);
-            cellValueNome.setPadding(5);
-            tabelaProduto.addCell(cellValueNome);
+            for (NotaItem item : itens) {
+                float subtotal = item.getPreco() * item.getQuantidade();
+                valorTotal += subtotal;
 
-            //quantidade
-            PdfPCell cellLabelQtd = new PdfPCell(new Phrase("Quantidade:", fontLabel));
-            cellLabelQtd.setBorder(Rectangle.NO_BORDER);
-            cellLabelQtd.setPadding(5);
-            tabelaProduto.addCell(cellLabelQtd);
+                // Código
+                PdfPCell cell = new PdfPCell(new Phrase(String.valueOf(item.getProduto().getId()), fontNormal));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setPadding(5);
+                tabelaProdutos.addCell(cell);
 
-            PdfPCell cellValueQtd = new PdfPCell(new Phrase(String.valueOf(item.getQuantidade()), fontNormal));
-            cellValueQtd.setBorder(Rectangle.NO_BORDER);
-            cellValueQtd.setPadding(5);
-            tabelaProduto.addCell(cellValueQtd);
+                // Nome do produto
+                cell = new PdfPCell(new Phrase(item.getProduto().getNome(), fontNormal));
+                cell.setPadding(5);
+                tabelaProdutos.addCell(cell);
 
-            //preço unitário
-            PdfPCell cellLabelPreco = new PdfPCell(new Phrase("Preço Unitário:", fontLabel));
-            cellLabelPreco.setBorder(Rectangle.NO_BORDER);
-            cellLabelPreco.setPadding(5);
-            tabelaProduto.addCell(cellLabelPreco);
+                // Quantidade
+                cell = new PdfPCell(new Phrase(String.valueOf(item.getQuantidade()), fontNormal));
+                cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                cell.setPadding(5);
+                tabelaProdutos.addCell(cell);
 
-            PdfPCell cellValuePreco = new PdfPCell(new Phrase(String.format("R$ %.2f", item.getPreco()), fontNormal));
-            cellValuePreco.setBorder(Rectangle.NO_BORDER);
-            cellValuePreco.setPadding(5);
-            tabelaProduto.addCell(cellValuePreco);
+                // Preço unitário
+                cell = new PdfPCell(new Phrase(String.format("R$ %.2f", item.getPreco()), fontNormal));
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                cell.setPadding(5);
+                tabelaProdutos.addCell(cell);
 
-            document.add(tabelaProduto);
+                // Subtotal
+                cell = new PdfPCell(new Phrase(String.format("R$ %.2f", subtotal), fontNormal));
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                cell.setPadding(5);
+                tabelaProdutos.addCell(cell);
+            }
 
-            //total da nota
-            float valorTotal = item.getPreco() * item.getQuantidade();
+            document.add(tabelaProdutos);
 
+            // Valor total
             Paragraph totalGeral = new Paragraph(
                     "VALOR TOTAL: R$ " + String.format("%.2f", valorTotal),
                     new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD)
@@ -715,6 +766,122 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_btn_ImprimirActionPerformed
+
+    private void btn_RemoverItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RemoverItemActionPerformed
+        int linha = tblItensNota.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um item para remover!");
+            return;
+        }
+
+        DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+        String nomeProduto = (String) dtmItens.getValueAt(linha, 1);
+
+        int confirma = JOptionPane.showConfirmDialog(this,
+                "Deseja remover o item: " + nomeProduto + "?",
+                "Confirmar Remoção",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirma == JOptionPane.YES_OPTION) {
+            dtmItens.removeRow(linha);
+            JOptionPane.showMessageDialog(this, "Item removido!");
+            
+            // se não houver itens, desbloqueia os radios buttons
+            if (dtmItens.getRowCount() == 0) {
+                desbloquearTipoNota();
+            }
+        }
+    }//GEN-LAST:event_btn_RemoverItemActionPerformed
+
+    private void btn_AddProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AddProdutoActionPerformed
+        int quantidade;
+        try {
+            if (rbn_Entrada.isSelected()) {
+                if (txt_Entrada.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Informe a quantidade comprada!");
+                    return;
+                }
+                quantidade = Integer.parseInt(txt_Entrada.getText().trim());
+            } else {
+                if (txt_Saida.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Informe a quantidade vendida!");
+                    return;
+                }
+                quantidade = Integer.parseInt(txt_Saida.getText().trim());
+            }
+
+            if (quantidade <= 0) {
+                JOptionPane.showMessageDialog(this, "A quantidade deve ser maior que zero!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Informe uma quantidade válida!");
+            return;
+        }
+
+        // busca objetos diretamente dos combos
+        String nomeProduto = (String) cmb_Produto.getSelectedItem();
+        Produto produtoSelecionado = listaProdutos.stream() //Converte a lista em um Stream (fluxo de dados) para aplicar operações funcionais.
+                .filter(p -> p.getNome().equals(nomeProduto)) //Filtra apenas os produtos que atendem a condição
+                .findFirst() //Pega o primeiro elemento que passou no filtro
+                .orElse(null);
+
+        // Verificar se produto já está na tabela
+        DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+        for (int i = 0; i < dtmItens.getRowCount(); i++) {
+            int codigoNaTabela = (int) dtmItens.getValueAt(i, 0);
+            if (codigoNaTabela == produtoSelecionado.getId()) {
+                JOptionPane.showMessageDialog(this, "Este produto já foi adicionado à nota!");
+                return;
+            }
+        }
+
+        // Verificar estoque em notas de saída
+        if (rbn_Saida.isSelected() && produtoSelecionado.getEstoque() < quantidade) {
+            JOptionPane.showMessageDialog(this, String.format(
+                    "ESTOQUE INSUFICIENTE!\n\nProduto: %s\nEstoque disponível: %d\nSolicitado: %d",
+                    produtoSelecionado.getNome(),
+                    produtoSelecionado.getEstoque(),
+                    quantidade
+            ));
+            return;
+        }
+
+        // Adicionar na tabela
+        Object[] linha = new Object[]{
+            produtoSelecionado.getId(),
+            produtoSelecionado.getNome(),
+            String.format("R$ %.2f", produtoSelecionado.getPrecoUnitario()),
+            quantidade
+        };
+
+        dtmItens.addRow(linha);
+
+        // Limpar campos do produto
+        txt_Entrada.setText("");
+        txt_Saida.setText("");
+        cmb_Produto.setSelectedIndex(0);
+
+        JOptionPane.showMessageDialog(this, "Item adicionado à nota!");
+        // BLOQUEAR OS RADIO BUTTONS APÓS ADICIONAR ITEM
+        bloquearTipoNota();
+    }//GEN-LAST:event_btn_AddProdutoActionPerformed
+
+    //bloquear a alteração do tipo de nota
+    private void bloquearTipoNota() {
+        DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+        if (dtmItens.getRowCount() > 0) {
+            rbn_Entrada.setEnabled(false);
+            rbn_Saida.setEnabled(false);
+        }
+    }
+
+    //desbloquear alteração do tipo de nota
+    private void desbloquearTipoNota() {
+        rbn_Entrada.setEnabled(true);
+        rbn_Saida.setEnabled(true);
+    }
 
     // Método genérico para carregar combos
     private <T> void carregarCombo(javax.swing.JComboBox<String> combo, List<T> lista, java.util.function.Function<T, String> getNome) {
@@ -763,6 +930,12 @@ public class CadastroNotas extends javax.swing.JFrame {
         }
     }
 
+    private void limparTabela() {
+        DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+        dtmItens.setRowCount(0);
+        desbloquearTipoNota();
+    }
+
     private void desbloquearCampos() {
         rbn_Entrada.setEnabled(true);
         rbn_Saida.setEnabled(true);
@@ -775,66 +948,15 @@ public class CadastroNotas extends javax.swing.JFrame {
         btn_DataAtual.setEnabled(true);
         btn_Deletar.setEnabled(true);
         btn_Cadastrar.setEnabled(true);
-    }
-
-    //pega os dados digitados na tela e monta um objeto Nota para enviar ao banco
-    private Nota construirNotaDosCampos() {
-        try {
-            if (txt_Data.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Informe a data da nota!");
-                return null;
-            }
-
-            String tipo;
-            Cliente cliente = null;
-            Fornecedor fornecedor = null;
-
-            if (rbn_Entrada.isSelected()) {
-                tipo = "E";
-                fornecedor = listaFornecedores.get(cmb_Fornecedor.getSelectedIndex());
-            } else {
-                tipo = "S";
-                cliente = listaClientes.get(cmb_Cliente.getSelectedIndex());
-            }
-
-            String nomeProduto = (String) cmb_Produto.getSelectedItem();
-            Produto produto = listaProdutos.stream() //Converte a lista em um Stream (fluxo de dados) para aplicar operações funcionais.
-                    .filter(p -> p.getNome().equals(nomeProduto)) //Filtra apenas os produtos que atendem a condição
-                    .findFirst() //Pega o primeiro elemento que passou no filtro
-                    .orElse(null);
-
-            int quantidade = rbn_Entrada.isSelected()
-                    ? Integer.parseInt(txt_Entrada.getText().trim())
-                    : Integer.parseInt(txt_Saida.getText().trim());
-
-            Nota nota = new Nota();
-            nota.setData(java.sql.Date.valueOf(txt_Data.getText().trim()));
-            nota.setTipo(tipo);
-            nota.setCliente(cliente);
-            nota.setFornecedor(fornecedor);
-
-            NotaItem item = new NotaItem();
-            item.setProduto(produto);
-            item.setQuantidade(quantidade);
-            item.setPreco(produto.getPrecoUnitario());
-            item.setNota(nota); // garante associação
-
-            List<NotaItem> itens = new ArrayList<>();
-            itens.add(item);
-            nota.setItens(itens);
-
-            return nota;
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao construir nota: " + ex.getMessage());
-            return null;
-        }
+        btn_AddProduto.setEnabled(true);
+        btn_RemoverItem.setEnabled(true);
     }
 
     //Método para preencher os campos da tela
     public void exibirNotaNosCampos(Nota nota) throws SQLException {
         txt_NotaID.setText(String.valueOf(nota.getId()));
         txt_Data.setText(String.valueOf(nota.getData()));
+
         if ("E".equals(nota.getTipo())) {
             rbn_Entrada.setSelected(true);
         } else {
@@ -842,7 +964,7 @@ public class CadastroNotas extends javax.swing.JFrame {
         }
         verificarTipoNota();
 
-        //dependendo da entrada, mostra só o nome da nota
+        // Preencher cliente ou fornecedor
         if (nota.getCliente() != null) {
             cmb_Cliente.setSelectedItem(nota.getCliente().getNome());
         } else {
@@ -855,18 +977,11 @@ public class CadastroNotas extends javax.swing.JFrame {
             cmb_Fornecedor.setSelectedIndex(-1);
         }
 
-        List<NotaItem> itens = carregarItensComNota(nota);
-        nota.setItens(itens);
-
-        if (!itens.isEmpty()) {
-            NotaItem primeiroItem = itens.get(0);
-            cmb_Produto.setSelectedItem(primeiroItem.getProduto().getNome());
-            if ("E".equals(nota.getTipo())) {
-                txt_Entrada.setText(String.valueOf(primeiroItem.getQuantidade()));
-            } else {
-                txt_Saida.setText(String.valueOf(primeiroItem.getQuantidade()));
-            }
-        }
+        // Limpar campos de quantidade (não precisa mostrar nada aqui)
+        txt_Entrada.setText("");
+        txt_Saida.setText("");
+        txt_Estoque.setText("");
+        cmb_Produto.setSelectedIndex(-1);
     }
 
     //att estoque ao cadastrar vice-versa
@@ -920,19 +1035,37 @@ public class CadastroNotas extends javax.swing.JFrame {
             }
 
             exibirNotaNosCampos(nota);
+            carregarItensNaTabela(nota.getId());
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao consultar nota: " + ex.getMessage());
         }
     }
 
-    private List<NotaItem> carregarItensComNota(Nota nota) throws SQLException {
+    private void carregarItensNaTabela(int notaId) throws SQLException {
+        // Limpar tabela
+        DefaultTableModel dtmItens = (DefaultTableModel) tblItensNota.getModel();
+        dtmItens.setRowCount(0);
+
+        // Buscar itens da nota
         NotaItemDAO itemDAO = new NotaItemDAO();
-        List<NotaItem> itens = itemDAO.listarItensPorNota(nota.getId());
-        for (NotaItem item : itens) {
-            item.setNota(nota); // associa cada item
+        List<NotaItem> itens = itemDAO.listarItensPorNota(notaId);
+
+        if (itens.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nenhum item encontrado nesta nota!");
+            return;
         }
-        return itens;
+
+        // Adicionar cada item na tabela
+        for (NotaItem item : itens) {
+            Object[] linha = new Object[]{
+                item.getProduto().getId(),
+                item.getProduto().getNome(),
+                String.format("R$ %.2f", item.getPreco()),
+                item.getQuantidade()
+            };
+            dtmItens.addRow(linha);
+        }
     }
 
     /**
@@ -971,6 +1104,7 @@ public class CadastroNotas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_AddProduto;
     private javax.swing.JButton btn_Cadastrar;
     private javax.swing.JButton btn_Consultar;
     private javax.swing.JButton btn_DataAtual;
@@ -980,12 +1114,14 @@ public class CadastroNotas extends javax.swing.JFrame {
     private javax.swing.JButton btn_Limpar;
     private javax.swing.JButton btn_ListarNotas;
     private javax.swing.JButton btn_Menu;
+    private javax.swing.JButton btn_RemoverItem;
     private javax.swing.JComboBox<String> cmb_Cliente;
     private javax.swing.JComboBox<String> cmb_Fornecedor;
     private javax.swing.JComboBox<String> cmb_Produto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_Cliente;
     private javax.swing.JLabel lbl_Estoque;
     private javax.swing.JLabel lbl_Fornecedor;
@@ -994,8 +1130,10 @@ public class CadastroNotas extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_QntdVendida;
     private javax.swing.JLabel lbl_TipoNota;
     private javax.swing.JLabel lbl_Titulo;
+    private javax.swing.JLabel lbl_TituloTable;
     private javax.swing.JRadioButton rbn_Entrada;
     private javax.swing.JRadioButton rbn_Saida;
+    private javax.swing.JTable tblItensNota;
     private javax.swing.JTextField txt_Data;
     private javax.swing.JTextField txt_Entrada;
     private javax.swing.JTextField txt_Estoque;

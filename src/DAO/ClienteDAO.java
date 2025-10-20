@@ -31,8 +31,7 @@ public class ClienteDAO {
 
     public void inserirCliente(Cliente cliente) {
         String query = "INSERT INTO Cliente(cli_nome, cli_rua, cli_numero, cli_bairro, cli_cidade, cli_cep , cli_uf, "
-                + "cli_email, cli_telefone)"
-                + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                + "cli_email, cli_telefone) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
         try {
             PreparedStatement stmt = this.conn.prepareStatement(query);

@@ -280,7 +280,7 @@ public class CadastroProduto extends javax.swing.JFrame {
 
     private void btn_AtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AtualizarActionPerformed
         Produto produto = new Produto();
-        produto.setId(Integer.parseInt(txt_ID.getText()));
+        produto.setId(Integer.parseInt(txt_ProdutoID.getText()));
         produto.setNome(txt_Nome.getText());
         produto.setDescricao(txa_Descricao.getText());
         produto.setPrecoUnitario(Float.parseFloat(txt_PrecoUnit.getText()));
